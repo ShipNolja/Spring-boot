@@ -22,8 +22,7 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.basePackage("com.shipnolja.reservation"))
                 .paths(PathSelectors.any()) //controller package 전부
                 //paths(PathSelectors.ant("/posts/**")).build() 추가도 가능
-                .build()
-                .useDefaultResponseMessages(false); // 기본 에러 메세지를 사용x
+                .build();
     }
     private ApiInfo swaggerInfo(){
         return new ApiInfoBuilder().title("Rest Api Documentation")
