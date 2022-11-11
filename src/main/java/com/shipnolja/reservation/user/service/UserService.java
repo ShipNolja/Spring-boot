@@ -1,10 +1,8 @@
 package com.shipnolja.reservation.user.service;
 
-import com.shipnolja.reservation.config.token.dto.TokenDto;
-import com.shipnolja.reservation.config.token.dto.TokenRequestDto;
-import com.shipnolja.reservation.user.dto.request.LoginDto;
+
+import com.shipnolja.reservation.ship.dto.request.ShipInfoDto;
 import com.shipnolja.reservation.user.dto.request.UserInfoDto;
-import com.shipnolja.reservation.user.dto.response.ResLoginDto;
 import com.shipnolja.reservation.user.model.UserInfo;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -17,5 +15,8 @@ public interface UserService extends UserDetailsService {
 
     //회원 정보 조회
     UserInfo userInfoCheck(UserInfo userInfo);
+
+    //사업자 등록
+    Long shipRegistration(UserInfo userInfo, ShipInfoDto shipInfoDto);
 
 }

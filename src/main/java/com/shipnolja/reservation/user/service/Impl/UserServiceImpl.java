@@ -1,13 +1,10 @@
 package com.shipnolja.reservation.user.service.Impl;
 
-import com.shipnolja.reservation.config.JwtTokenProvider;
-import com.shipnolja.reservation.config.token.dto.TokenDto;
-import com.shipnolja.reservation.config.token.dto.TokenRequestDto;
-import com.shipnolja.reservation.config.token.model.RefreshToken;
-import com.shipnolja.reservation.config.token.repository.RefreshTokenJpaRepo;
-import com.shipnolja.reservation.user.dto.request.LoginDto;
+import com.shipnolja.reservation.ship.dto.request.ShipInfoDto;
+import com.shipnolja.reservation.ship.model.ShipInfo;
+import com.shipnolja.reservation.ship.repository.ShipRepository;
 import com.shipnolja.reservation.user.dto.request.UserInfoDto;
-import com.shipnolja.reservation.user.dto.response.ResLoginDto;
+
 import com.shipnolja.reservation.user.model.UserInfo;
 import com.shipnolja.reservation.user.model.UserRole;
 import com.shipnolja.reservation.user.repository.UserRepository;
@@ -18,7 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 
 @RequiredArgsConstructor
@@ -26,6 +23,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final ShipRepository shipRepository;
 
     @Override
     public UserDetails loadUserByUsername(String userPk) throws UsernameNotFoundException {
@@ -35,6 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     //회원가입
+    @Transactional
     @Override
     public Long join(UserInfoDto userInfoDto) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
@@ -77,5 +76,38 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(userInfo.getId()).orElseThrow(
                 ()->new CustomException.ResourceNotFoundException("회원 정보를 찾을 수 없습니다.")
         );
+    }
+
+    //선박 등록
+    @Transactional
+    @Override
+    public Long shipRegistration(UserInfo userInfo, ShipInfoDto shipInfoDto) {
+        UserInfo registerUserInfo = userRepository.findById(userInfo.getId()).orElseThrow(
+                ()->new CustomException.ResourceNotFoundException("회원 정보를 찾을 수 없습니다.")
+        );
+        
+        //일반 사용자인지 검증
+        userRepository.findByIdAndRole(registerUserInfo.getId(),UserRole.ROLE_USER).orElseThrow(
+                ()->new CustomException.ResourceNotFoundException("이미 사업자로 등록된 회원입니다.")
+        );
+
+        //사업자로 권한 변경
+        userRepository.updateUserRole(UserRole.ROLE_MANAGER,registerUserInfo.getId());
+
+        ShipInfo registerShipInfo =
+                shipRepository.save(
+                        ShipInfo.builder()
+                                .userInfo(registerUserInfo)
+                                .registerNumber(shipInfoDto.getRegisterNumber())
+                                .name(shipInfoDto.getName())
+                                .bankName(shipInfoDto.getBankName())
+                                .bankNum(shipInfoDto.getBankNum())
+                                .area(shipInfoDto.getArea())
+                                .detailArea(shipInfoDto.getDetailArea())
+                                .port(shipInfoDto.getPort())
+                                .build()
+                );
+
+        return registerShipInfo.getId();
     }
 }
