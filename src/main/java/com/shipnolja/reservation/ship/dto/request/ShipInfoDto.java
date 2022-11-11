@@ -1,5 +1,6 @@
 package com.shipnolja.reservation.ship.dto.request;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,24 +13,24 @@ import lombok.NoArgsConstructor;
 
 public class ShipInfoDto {
 
-    //선박 등록 번호
+    @ApiModelProperty(value = "선박 등록 번호", example = "20203030", required = true)
     private String registerNumber;
 
-    //선박이름
+    @ApiModelProperty(value = "배 이름", example = "써니호", required = true)
     private String name;
 
-    //은행명
+    @ApiModelProperty(value = "은행명", example = "국민", required = true)
     private String bankName;
 
-    //계좌번호
+    @ApiModelProperty(value = "계좌번호", example = "940020020404", required = true)
     private String bankNum;
 
-    //지역
+    @ApiModelProperty(value = "지역", example = "강원도", required = true)
     private String area;
 
-    //세부지역
+    @ApiModelProperty(value = "세부지역", example = "속초", required = true)
     private String detailArea;
 
-    //항구
+    @ApiModelProperty(value = "항구", example = "대포항", required = true)
     private String port;
 }
