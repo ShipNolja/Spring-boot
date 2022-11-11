@@ -1,5 +1,10 @@
 package com.shipnolja.reservation.user.service.Impl;
 
+import com.shipnolja.reservation.config.JwtTokenProvider;
+import com.shipnolja.reservation.config.token.dto.TokenDto;
+import com.shipnolja.reservation.config.token.dto.TokenRequestDto;
+import com.shipnolja.reservation.config.token.model.RefreshToken;
+import com.shipnolja.reservation.config.token.repository.RefreshTokenJpaRepo;
 import com.shipnolja.reservation.user.dto.request.LoginDto;
 import com.shipnolja.reservation.user.dto.request.UserInfoDto;
 import com.shipnolja.reservation.user.dto.response.ResLoginDto;
@@ -15,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,8 +33,6 @@ public class UserServiceImpl implements UserService {
                 ()->new UsernameNotFoundException(userPk)
         );
     }
-
-
 
     //회원가입
     @Override
@@ -56,16 +60,6 @@ public class UserServiceImpl implements UserService {
         ).getId();
     }
 
-    @Override
-    public ResLoginDto login(LoginDto loginDto) {
-        UserInfo loginUserInfo = userRepository.findByUserid(loginDto.getUserId()).orElseThrow(
-                ()->new CustomException.ResourceNotFoundException("회원가입 되지 않은 정보입니다.")
-        );
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        if(!bCryptPasswordEncoder.matches(loginDto.getPassword(),loginUserInfo.getPassword()))
-            throw new CustomException.ResourceNotFoundException("비밀번호 오류입니다.");
-        return new ResLoginDto(loginUserInfo);
-    }
 
     //유저 아이디 중복 체크
     @Override

@@ -1,5 +1,6 @@
-package com.shipnolja.reservation.util.exception;
+package com.shipnolja.reservation.util.exception.ExceptionHandler;
 
+import com.shipnolja.reservation.util.exception.CustomException;
 import com.shipnolja.reservation.util.responseDto.ResErrorDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
