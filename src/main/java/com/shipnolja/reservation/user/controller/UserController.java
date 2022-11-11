@@ -31,7 +31,7 @@ public class UserController {
         return new ResResultDto(1L , "성공!");
     }
 
-    @ApiOperation(value = "내 정보 조회",notes = "내 정보를 조회 합니다.")
+    @ApiOperation(value = "선박 등록",notes = "선박을 등록합니다.")
     @PostMapping("")
     public ResResultDto shipRegistration(@LoginUser UserInfo userInfo,
                                          @ApiParam(value = "선박 가입 정보 DTO", required = true) @RequestBody ShipInfoDto shipInfoDto){
