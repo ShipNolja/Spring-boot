@@ -57,8 +57,13 @@ public class ShipInfo {
     @Column(name = "port")
     private String port;
 
+    //도로명 주소
+    @Column(name = "street_address")
+    private String streetAddress;
+
     @Builder
-    public ShipInfo( UserInfo userInfo, String registerNumber, String name, String bankName, String bankNum, String area, String detailArea, String port) {
+    public ShipInfo( UserInfo userInfo, String registerNumber, String name, String bankName,
+                     String bankNum, String area, String detailArea, String port, String streetAddress) {
         this.userInfo = userInfo;
         this.registerNumber = registerNumber;
         this.name = name;
@@ -67,5 +72,6 @@ public class ShipInfo {
         this.area = area;
         this.detailArea = detailArea;
         this.port = port;
+        this.streetAddress = streetAddress;
     }
 }

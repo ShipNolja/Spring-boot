@@ -33,4 +33,7 @@ public class ShipInfoDto {
 
     @ApiModelProperty(value = "항구", example = "대포항", required = true)
     private String port;
+
+    @ApiModelProperty(value = "도로명 주소", example = "서울 송파구 올림픽로 30", required = true)
+    private String streetAddress;
 }
