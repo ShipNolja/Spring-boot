@@ -105,6 +105,7 @@ public class UserServiceImpl implements UserService {
                                 .area(shipInfoDto.getArea())
                                 .detailArea(shipInfoDto.getDetailArea())
                                 .port(shipInfoDto.getPort())
+                                .streetAddress(shipInfoDto.getStreetAddress())
                                 .build()
                 );
 
