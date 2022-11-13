@@ -43,7 +43,7 @@ public class PermitAllController {
     }
 
     @ApiOperation(value = "아이디 중복 체크",notes = "이메일 형식의 아이디를 중복 체크 해줍니다.")
-    @GetMapping("/{userId}")
+    @GetMapping("/userId/{userId}")
     public ResResultDto userIdCheck(
             @ApiParam(value = "회원 가입 할 아이디", required = true) @PathVariable String userId
     ){
@@ -58,9 +58,9 @@ public class PermitAllController {
     }
 
     @ApiOperation(value = "핸드폰 번호 중복 체크",notes = "핸드폰 번호를 중복 체크 해줍니다.")
-    @GetMapping("/{userPhone}")
+    @GetMapping("/phone/{userPhone}")
     public ResResultDto userPhoneCheck(
-            @ApiParam(value = "회원 가입 할 핸드폰 번호", required = true) @RequestParam String userPhone
+            @ApiParam(value = "회원 가입 할 핸드폰 번호", required = true) @PathVariable String userPhone
     ){
         Long result =  userService.userPhoneCheck(userPhone);
 
