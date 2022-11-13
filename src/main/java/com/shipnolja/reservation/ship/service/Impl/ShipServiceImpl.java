@@ -7,6 +7,7 @@ import com.shipnolja.reservation.ship.model.ShipInfo;
 import com.shipnolja.reservation.ship.repository.ShipRepository;
 import com.shipnolja.reservation.ship.service.ShipService;
 import com.shipnolja.reservation.util.exception.CustomException;
+import com.shipnolja.reservation.wish.repository.WishRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,7 @@ import java.util.List;
 public class ShipServiceImpl implements ShipService {
 
     private final ShipRepository shipRepository;
+    private final WishRepository wishRepository;
 
     @Override
     public List<ResShipInfoList> shipList(String area, String detailArea, String port, String shipName, String sortBy, String sortMethod, int page) {
@@ -49,6 +51,7 @@ public class ShipServiceImpl implements ShipService {
             listDto.setDetailArea(entity.getDetailArea());
             listDto.setPort(entity.getPort());
             listDto.setStreetAddress(entity.getStreetAddress());
+            listDto.setWishCount(wishRepository.countByShipInfo(entity));
             listDto.setTotalPage(shipInfoPage.getTotalPages());
             listDto.setTotalElement(shipInfoPage.getTotalElements());
             shipInfoListDto.add(listDto);
@@ -64,7 +67,8 @@ public class ShipServiceImpl implements ShipService {
                 () -> new CustomException.ResourceNotFoundException("선상 정보를 찾을 수 없습니다")
         );
 
-        return new ResShipInfo(shipInfo);
+
+        return new ResShipInfo(shipInfo,wishRepository.countByShipInfo(shipInfo));
     }
 
     @Override

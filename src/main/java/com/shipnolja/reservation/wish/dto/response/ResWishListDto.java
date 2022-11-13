@@ -1,17 +1,17 @@
-package com.shipnolja.reservation.ship.dto.response;
+package com.shipnolja.reservation.wish.dto.response;
 
-import com.shipnolja.reservation.user.model.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class ResShipInfoList {
+@AllArgsConstructor
+public class ResWishListDto {
+    //즐겨찾기 아이디
+    private Long wishId;
 
-    private Long Id;
-
+    //-----------------선박정보------------------
     private String image;
 
     private String name;
@@ -22,12 +22,8 @@ public class ResShipInfoList {
 
     private String port;
 
-    private String streetAddress;
-
-    //찜 카운트
-    private long wishCount;
-
     private int totalPage;
 
     private long totalElement;
+
 }

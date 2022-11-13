@@ -38,7 +38,10 @@ public class ResShipInfo {
 
     private String streetAddress;
 
-    public ResShipInfo(ShipInfo shipInfo) {
+    //찜 카운트
+    private long wishCount;
+
+    public ResShipInfo(ShipInfo shipInfo,Long wishCount) {
         this.id = shipInfo.getId();
         this.userName = shipInfo.getUserInfo().getName();
         this.userPhone = shipInfo.getUserInfo().getPhone();
@@ -51,5 +54,6 @@ public class ResShipInfo {
         this.detailArea = shipInfo.getDetailArea();
         this.port = shipInfo.getPort();
         this.streetAddress = shipInfo.getStreetAddress();
+        this.wishCount = wishCount;
     }
 }
