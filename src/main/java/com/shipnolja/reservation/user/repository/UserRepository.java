@@ -16,6 +16,8 @@ public interface UserRepository extends JpaRepository<UserInfo,Long> {
 
     Optional<UserInfo> findByIdAndRole(Long id,UserRole userRole);
 
+    Optional<UserInfo> findByPhone(String phone);
+
     //권한 변경
     @Modifying
     @Query("update UserInfo u set u.role = :role where u.id = :id")

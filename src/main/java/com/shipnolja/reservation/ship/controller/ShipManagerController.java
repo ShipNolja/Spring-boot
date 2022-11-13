@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = {"4. ShipManger - api - ROLE_MANAGER 만 이용가능"})
+@Api(tags = {"ShipManger - api - ROLE_MANAGER 만 이용가능"})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/manager")
