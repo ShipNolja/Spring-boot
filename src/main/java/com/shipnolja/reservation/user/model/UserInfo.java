@@ -23,35 +23,35 @@ public class UserInfo implements UserDetails {
     //공통부분
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "u_id")
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "u_userid")
+    @Column(name = "userid")
     private String userid;
 
-    @Column(name = "u_password")
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "u_name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "u_phone")
+    @Column(name = "phone")
     private String phone;
 
     
     //권한
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "u_role")
+    @Column(name = "role")
     private UserRole role;
 
     /**                            탈퇴 관련                            **/
 
     //회원 탈퇴 여부
-    @Column(name = "u_Enabled")
+    @Column(name = "Enabled")
     private boolean userEnabled;
 
     //회원 탈퇴 날짜
-    @Column(name = "u_deleted_date")
+    @Column(name = "deleted_date")
     private LocalDateTime userDeletedDate;
 
 

@@ -16,6 +16,9 @@ public class ShipInfoDto {
     @ApiModelProperty(value = "선박 등록 번호", example = "20203030", required = true)
     private String registerNumber;
 
+    @ApiModelProperty(value = "배 대표 이미지", example = "사진", required = true)
+    private String image;
+
     @ApiModelProperty(value = "배 이름", example = "써니호", required = true)
     private String name;
 
@@ -36,4 +39,6 @@ public class ShipInfoDto {
 
     @ApiModelProperty(value = "도로명 주소", example = "서울 송파구 올림픽로 30", required = true)
     private String streetAddress;
+
+
 }
