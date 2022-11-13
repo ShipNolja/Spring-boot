@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,15 +36,23 @@ public class FishingInfo {
     /* 출항지 */
     @Column(name = "info_start_point")
     private String infoStartPoint;
+    
+    /* 수용 인원 */
+    @Column(name = "info_capacity")
+    private Integer infoCapacity;
 
     /* 출항 시간 */
     @Column(name = "info_start_time")
     private LocalDateTime infoStartTime;
     
+    /* 출항 일시 */
+    @Column(name = "info_start_date")
+    private LocalDateTime infoStartDate;
+    
     /* 예약 상태 */
-    @Enumerated(value = EnumType.STRING)
+    /* 에약 가능, 예약 마감 */
     @Column(name = "into_reservation_status")
-    private reservationStatus infoReservationStatus;
+    private String infoReservationStatus;
 
     /* 선박 정보 */
     @ManyToOne
@@ -54,14 +63,16 @@ public class FishingInfo {
 
     @Builder
     public FishingInfo(Long infoId, String infoNotice, String infoTarget, String infoAssemblePoint, String infoStartPoint,
-                       LocalDateTime infoStartTime, reservationStatus infoReservationStatus, ShipInfo shipInfo) {
+                       Integer infoCapacity, LocalDateTime infoStartTime, LocalDateTime infoStartDate, String infoReservationStatus, ShipInfo shipInfo) {
 
         this.infoId = infoId;
         this.infoNotice = infoNotice;
         this.infoTarget = infoTarget;
         this.infoAssemblePoint = infoAssemblePoint;
         this.infoStartPoint = infoStartPoint;
+        this.infoCapacity = infoCapacity;
         this.infoStartTime = infoStartTime;
+        this.infoStartDate = infoStartDate;
         this.infoReservationStatus = infoReservationStatus;
         this.shipInfo = shipInfo;
 
