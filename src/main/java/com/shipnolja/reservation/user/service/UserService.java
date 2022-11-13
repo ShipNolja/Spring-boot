@@ -5,6 +5,7 @@ import com.shipnolja.reservation.ship.dto.request.ShipInfoDto;
 import com.shipnolja.reservation.user.dto.request.UserInfoDto;
 import com.shipnolja.reservation.user.model.UserInfo;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService extends UserDetailsService {
     //회원가입
@@ -17,6 +18,6 @@ public interface UserService extends UserDetailsService {
     UserInfo userInfoCheck(UserInfo userInfo);
 
     //사업자 등록
-    Long shipRegistration(UserInfo userInfo, ShipInfoDto shipInfoDto);
+    Long shipRegistration(UserInfo userInfo, ShipInfoDto shipInfoDto, MultipartFile file);
 
 }

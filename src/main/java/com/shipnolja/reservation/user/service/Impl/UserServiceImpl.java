@@ -16,6 +16,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
 
 @RequiredArgsConstructor
@@ -81,7 +86,7 @@ public class UserServiceImpl implements UserService {
     //선박 등록
     @Transactional
     @Override
-    public Long shipRegistration(UserInfo userInfo, ShipInfoDto shipInfoDto) {
+    public Long shipRegistration(UserInfo userInfo, ShipInfoDto shipInfoDto, MultipartFile file) {
         UserInfo registerUserInfo = userRepository.findById(userInfo.getId()).orElseThrow(
                 ()->new CustomException.ResourceNotFoundException("회원 정보를 찾을 수 없습니다.")
         );
@@ -90,6 +95,33 @@ public class UserServiceImpl implements UserService {
         userRepository.findByIdAndRole(registerUserInfo.getId(),UserRole.ROLE_USER).orElseThrow(
                 ()->new CustomException.ResourceNotFoundException("이미 사업자로 등록된 회원입니다.")
         );
+        //파일 저장 경로
+        String savePath = System.getProperty("user.dir") + "//src//main//resources//static//shipImage";
+
+        //파일 저장되는 폳더 없으면 생성
+        if(!new File(savePath).exists()) {
+            try{
+                new File(savePath).mkdir();
+            } catch (Exception e2) {
+                e2.getStackTrace();
+            }
+        }
+
+        String originFileName = file.getOriginalFilename().toLowerCase();
+
+        //UUID로 파일명 중복되지 않게 유일한 식별자 + 확장자로 저장
+        UUID uuid = UUID.randomUUID();
+        String saveFileName = uuid + "__" + originFileName;
+
+        //File로 저장 경로와 저장 할 파일명 합쳐서 transferTo() 사용하여 업로드하려는 파일을 해당 경로로 저장
+        String filepath = savePath + "//" + saveFileName;
+        String dbFilePath = "../shipImage/" + saveFileName;
+
+        try {
+            file.transferTo(new File(filepath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //사업자로 권한 변경
         userRepository.updateUserRole(UserRole.ROLE_MANAGER,registerUserInfo.getId());
@@ -99,6 +131,7 @@ public class UserServiceImpl implements UserService {
                         ShipInfo.builder()
                                 .userInfo(registerUserInfo)
                                 .registerNumber(shipInfoDto.getRegisterNumber())
+                                .image(dbFilePath)
                                 .name(shipInfoDto.getName())
                                 .bankName(shipInfoDto.getBankName())
                                 .bankNum(shipInfoDto.getBankNum())

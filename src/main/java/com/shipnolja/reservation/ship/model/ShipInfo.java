@@ -21,17 +21,21 @@ public class ShipInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
-    private Long Id;
+    private Long id;
 
     //유저 정보 외래키
     @OneToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name="userInfo")
+    @JoinColumn
     private UserInfo userInfo;
 
     //선박 등록 번호
     @Column(name = "register_number")
     private String registerNumber;
+
+    //선박 대표 이미지
+    @Column(name = "image")
+    private String image;
 
     //선박이름
     @Column(name = "name")
@@ -62,10 +66,11 @@ public class ShipInfo {
     private String streetAddress;
 
     @Builder
-    public ShipInfo( UserInfo userInfo, String registerNumber, String name, String bankName,
+    public ShipInfo( UserInfo userInfo, String registerNumber,String image ,String name, String bankName,
                      String bankNum, String area, String detailArea, String port, String streetAddress) {
         this.userInfo = userInfo;
         this.registerNumber = registerNumber;
+        this.image = image;
         this.name = name;
         this.bankName = bankName;
         this.bankNum = bankNum;
