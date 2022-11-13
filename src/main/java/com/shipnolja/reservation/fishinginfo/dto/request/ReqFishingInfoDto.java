@@ -1,6 +1,5 @@
 package com.shipnolja.reservation.fishinginfo.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,21 +21,18 @@ public class ReqFishingInfoDto {
     private Long shipId;
 
     /* 공지사항 */
-    @ApiModelProperty(value = "공지사항", example = "xx어종 출조 모집, 낚시대 대여 가능 등")
+    @ApiModelProperty(value = "공지사항", example = "xx어종 출조 모집, 낚시대 대여 가능 등", required = true)
+    @NotBlank(message = "공지사항은 필수 입력입니다.")
     private String infoNotice;
     
     /* 대상어종 */
     @ApiModelProperty(value = "대상어종", example = "광어, 우럭, 갑오징어 등", required = true)
-    @NotBlank(message = "대상어종은 필수 입력입니다.")
+    @NotBlank(message = "대상 어종은 필수 입력입니다.")
     private String infoTarget;
-
-    /* 출항시간 */
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-    @ApiModelProperty(value = "출항시간", example = "06:00 ~ 14:30", required = true)
-    private LocalDateTime infoStartTime;
 
     /* 출항지 */
     @ApiModelProperty(value = "출항지", example = "인천 중구 항동7가", required = true)
+    @NotBlank(message = "출항지는 필수 입력입니다.")
     private String infoStartPoint;
 
     /* 예약상태 */
@@ -45,14 +42,22 @@ public class ReqFishingInfoDto {
 
     /* 집결지 */
     @ApiModelProperty(value = "집결지", example = "인천 중구 항동7가", required = true)
+    @NotBlank(message = "집결지는 필수 입력입니다.")
     private String infoAssemblePoint;
 
     /* 수용 인원 */
     @ApiModelProperty(value = "수용 인원", example = "xx명", required = true)
+    @NotBlank(message = "수용 인원은 필수 입력입니다.")
     private Integer infoCapacity;
 
     /* 출항일시 */
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @ApiModelProperty(value = "출항 일시", example = "xxxx년 xx월 xx일", required = true)
-    private LocalDateTime infoStartDate;
+    @ApiModelProperty(value = "출항 일시", example = "xxxx(년)/xx(월)/xx(일)", required = true)
+    @NotBlank(message = "출항 일자는 필수 입력입니다.")
+    private LocalDate infoStartDate;
+
+    /* 출항시간 */
+    @ApiModelProperty(value = "출항시간", example = "xx(시):xx(분):xx(초)", required = true)
+    @NotBlank(message = "출항 시간은 필수 입력입니다.")
+    private LocalTime infoStartTime;
+
 }

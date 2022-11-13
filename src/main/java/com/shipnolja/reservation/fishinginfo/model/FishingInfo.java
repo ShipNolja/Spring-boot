@@ -10,6 +10,8 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @NoArgsConstructor
@@ -42,12 +44,12 @@ public class FishingInfo {
     private Integer infoCapacity;
 
     /* 출항 시간 */
-    @Column(name = "info_start_time")
-    private LocalDateTime infoStartTime;
+    @Column(name = "info_start_time", columnDefinition = "TIME")
+    private LocalTime infoStartTime;
     
-    /* 출항 일시 */
-    @Column(name = "info_start_date")
-    private LocalDateTime infoStartDate;
+    /* 출항 일자 */
+    @Column(name = "info_start_date", columnDefinition = "DATE")
+    private LocalDate infoStartDate;
     
     /* 예약 상태 */
     /* 에약 가능, 예약 마감 */
@@ -60,10 +62,9 @@ public class FishingInfo {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private ShipInfo shipInfo;
 
-
     @Builder
     public FishingInfo(Long infoId, String infoNotice, String infoTarget, String infoAssemblePoint, String infoStartPoint,
-                       Integer infoCapacity, LocalDateTime infoStartTime, LocalDateTime infoStartDate, String infoReservationStatus, ShipInfo shipInfo) {
+                       Integer infoCapacity, LocalTime infoStartTime, LocalDate infoStartDate, String infoReservationStatus, ShipInfo shipInfo) {
 
         this.infoId = infoId;
         this.infoNotice = infoNotice;

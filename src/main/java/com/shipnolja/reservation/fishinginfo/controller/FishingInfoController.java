@@ -14,17 +14,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(tags = {"FishinInfo - api - 매니저만 이용 가능"})
+@Api(tags = {"FishingInfo - api - 매니저만 사용 가능 (등록, 수정, 삭제)"})
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/manager")
+@RequestMapping("/api/manager/fishingInfo")
 public class FishingInfoController {
 
     private final FishingInfoService fishingInfoService;
 
     /* 출조 정보 등록 */
     @ApiOperation(value = "출조 정보 등록", notes = "출조 정보를 등록 합니다.")
-    @PostMapping("/fishingInfo/write")
+    @PostMapping("")
     public ResResultDto fishingInfoWrite(@LoginUser UserInfo userInfo,
                                          @ApiParam(value = "출조 정보를 갖는 객체", required = true) @RequestBody ReqFishingInfoDto reqFishingInfoDto) {
 
