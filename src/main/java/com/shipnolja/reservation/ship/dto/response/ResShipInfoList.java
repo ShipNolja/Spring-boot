@@ -24,6 +24,9 @@ public class ResShipInfoList {
 
     private String streetAddress;
 
+    //찜 카운트
+    private long wishCount;
+
     private int totalPage;
 
     private long totalElement;
