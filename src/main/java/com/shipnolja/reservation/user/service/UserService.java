@@ -12,7 +12,10 @@ public interface UserService extends UserDetailsService {
     Long join(UserInfoDto userInfoDto);
 
     //아이디 중복 체크
-    Integer userIdCheck(String userid);
+    Long userIdCheck(String userid);
+
+    //핸드폰 번호 중복 체크
+    Long userPhoneCheck(String userPhone);
 
     //회원 정보 조회
     UserInfo userInfoCheck(UserInfo userInfo);
