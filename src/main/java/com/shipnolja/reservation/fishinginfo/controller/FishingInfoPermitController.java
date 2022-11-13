@@ -2,12 +2,14 @@ package com.shipnolja.reservation.fishinginfo.controller;
 
 import com.shipnolja.reservation.fishinginfo.dto.response.ResFishingInfoDto;
 import com.shipnolja.reservation.fishinginfo.service.FishingInfoService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Api(tags = {"FishingInfo - api - 모든 이용자가 이용 가능"})
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/fishingInfo")

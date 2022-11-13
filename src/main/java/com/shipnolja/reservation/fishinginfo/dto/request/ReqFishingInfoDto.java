@@ -1,5 +1,6 @@
 package com.shipnolja.reservation.fishinginfo.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,9 @@ import java.time.LocalDateTime;
 @Getter
 public class ReqFishingInfoDto {
 
+    /* 선박 아이디 */
+    @ApiModelProperty(value = "선박 아이디", example = "선박 기본키 값", required = true)
+    private Long shipId;
 
     /* 공지사항 */
     @ApiModelProperty(value = "공지사항", example = "xx어종 출조 모집, 낚시대 대여 가능 등")
@@ -26,6 +30,7 @@ public class ReqFishingInfoDto {
     private String infoTarget;
 
     /* 출항시간 */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     @ApiModelProperty(value = "출항시간", example = "06:00 ~ 14:30", required = true)
     private LocalDateTime infoStartTime;
 
@@ -42,11 +47,12 @@ public class ReqFishingInfoDto {
     @ApiModelProperty(value = "집결지", example = "인천 중구 항동7가", required = true)
     private String infoAssemblePoint;
 
-    /* 수용인원 */
+    /* 수용 인원 */
     @ApiModelProperty(value = "수용 인원", example = "xx명", required = true)
     private Integer infoCapacity;
 
     /* 출항일시 */
-    @ApiModelProperty(value = "출항 일시", example = "xx월 xx일(x요일) or (일)", required = true)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @ApiModelProperty(value = "출항 일시", example = "xxxx년 xx월 xx일", required = true)
     private LocalDateTime infoStartDate;
 }

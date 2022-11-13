@@ -6,5 +6,6 @@ import com.shipnolja.reservation.util.responseDto.ResResultDto;
 
 public interface FishingInfoService {
 
+    /* 출조 정보 등록 */
     ResResultDto fishingInfoWrite(UserInfo userInfo, ReqFishingInfoDto reqFishingInfo);
 }
