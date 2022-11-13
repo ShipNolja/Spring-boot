@@ -11,7 +11,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Api(tags = {"2. User - api"})
 @RequiredArgsConstructor
@@ -32,10 +34,11 @@ public class UserController {
     }
 
     @ApiOperation(value = "선박 등록",notes = "선박을 등록합니다.")
-    @PostMapping("")
+    @PostMapping(value = "",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResResultDto shipRegistration(@LoginUser UserInfo userInfo,
-                                         @ApiParam(value = "선박 가입 정보 DTO", required = true) @RequestBody ShipInfoDto shipInfoDto){
-        Long result = userService.shipRegistration(userInfo,shipInfoDto);
+                                         @ApiParam(value = "선박 가입 정보 DTO", required = true) @RequestPart(value = "dto") ShipInfoDto shipInfoDto,
+                                         @ApiParam(value = "선박 이미지", required = true) @RequestPart(value = "image") MultipartFile file){
+        Long result = userService.shipRegistration(userInfo,shipInfoDto,file);
         return new ResResultDto(result,"선박 등록을 성공했습니다");
     }
 
