@@ -46,10 +46,10 @@ public class UserServiceImpl implements UserService {
         userInfoDto.setPassword(bCryptPasswordEncoder.encode(rawPassword));
 
         //중복 id,email 검증
-        Integer idCheckResult = userIdCheck(userInfoDto.getUserid());
+        Long idCheckResult = userIdCheck(userInfoDto.getUserid());
 
 
-        if(idCheckResult.equals(-1)) {
+        if(idCheckResult.equals(-1L)) {
             return -1L;
         }
         return userRepository.save(
@@ -67,12 +67,20 @@ public class UserServiceImpl implements UserService {
 
     //유저 아이디 중복 체크
     @Override
-    public Integer userIdCheck(String userid) {
+    public Long userIdCheck(String userid) {
         //.isPresent , Optional객체가 있으면 true null이면 false 반환
         if (userRepository.findByUserid(userid).isPresent()) {
-            return -1; //같은 userid있으면 -1반환
+            return -1L; //같은 userid있으면 -1반환
         }
-        return 1;
+        return 1L;
+    }
+
+    @Override
+    public Long userPhoneCheck(String userPhone) {
+        if(userRepository.findByPhone(userPhone).isPresent()){
+            return -1L;
+        }
+        return 1L;
     }
 
     //회원 정보 조회

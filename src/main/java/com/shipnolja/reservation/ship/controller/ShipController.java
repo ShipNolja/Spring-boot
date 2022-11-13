@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = {"3. Ship - api - 모든 사용자가 이용 가능"})
+@Api(tags = {"Ship - api - 모든 사용자가 이용 가능"})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/ship")

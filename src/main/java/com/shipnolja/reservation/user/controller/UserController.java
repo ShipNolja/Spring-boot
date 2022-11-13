@@ -15,7 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@Api(tags = {"2. User - api"})
+@Api(tags = {"User - ROLE_USER"})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/user")
