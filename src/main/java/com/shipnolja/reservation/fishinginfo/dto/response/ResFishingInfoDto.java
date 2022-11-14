@@ -1,19 +1,41 @@
 package com.shipnolja.reservation.fishinginfo.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Getter
-
+@Setter
 public class ResFishingInfoDto {
 
-    List<Map<String, Object>> fishingInfoList;
+    private Long Id;
+
+    private String area;
+
+    private String detailArea;
+
+    private String port;
+
+    private String shipName;
+
+    private String target;
+
+    private LocalDateTime startDate;
+
+    private LocalDateTime startTime;
+
+    private LocalDateTime EndTime;
+
+    private String infoReservationStatus;
+
+    private Integer infoCapacity;
+
+    private int totalPage;
+
+    private long totalElement;
 }

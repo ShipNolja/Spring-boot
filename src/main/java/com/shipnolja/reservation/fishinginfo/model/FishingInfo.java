@@ -26,6 +26,10 @@ public class FishingInfo {
     /* 공지사항 */
     @Column(name = "info_notice")
     private String infoNotice;
+    
+    /* 전달사항 */
+    @Column(name = "info_message")
+    private String infoMessage;
 
     /* 대상어종 */
     @Column(name = "info_target")
@@ -44,12 +48,16 @@ public class FishingInfo {
     private Integer infoCapacity;
 
     /* 출항 시간 */
-    @Column(name = "info_start_time", columnDefinition = "TIME")
-    private LocalTime infoStartTime;
+    @Column(name = "info_start_time")
+    private LocalDateTime infoStartTime;
+    
+    /* 입항 시간 */
+    @Column(name = "info_end_time")
+    private LocalDateTime infoEndTime;
     
     /* 출항 일자 */
-    @Column(name = "info_start_date", columnDefinition = "DATE")
-    private LocalDate infoStartDate;
+    @Column(name = "info_start_date")
+    private LocalDateTime infoStartDate;
     
     /* 예약 상태 */
     /* 에약 가능, 예약 마감 */
@@ -63,16 +71,18 @@ public class FishingInfo {
     private ShipInfo shipInfo;
 
     @Builder
-    public FishingInfo(Long infoId, String infoNotice, String infoTarget, String infoAssemblePoint, String infoStartPoint,
-                       Integer infoCapacity, LocalTime infoStartTime, LocalDate infoStartDate, String infoReservationStatus, ShipInfo shipInfo) {
+    public FishingInfo(Long infoId, String infoNotice, String infoMessage,String infoTarget, String infoAssemblePoint, String infoStartPoint,
+                       Integer infoCapacity, LocalDateTime infoStartTime, LocalDateTime infoEndTime, LocalDateTime infoStartDate, String infoReservationStatus, ShipInfo shipInfo) {
 
         this.infoId = infoId;
         this.infoNotice = infoNotice;
+        this.infoMessage = infoMessage;
         this.infoTarget = infoTarget;
         this.infoAssemblePoint = infoAssemblePoint;
         this.infoStartPoint = infoStartPoint;
         this.infoCapacity = infoCapacity;
         this.infoStartTime = infoStartTime;
+        this.infoEndTime = infoEndTime;
         this.infoStartDate = infoStartDate;
         this.infoReservationStatus = infoReservationStatus;
         this.shipInfo = shipInfo;
