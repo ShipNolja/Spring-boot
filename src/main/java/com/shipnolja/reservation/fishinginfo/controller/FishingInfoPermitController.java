@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Api(tags = {"FishingInfo - api - 모든 이용자가 이용 가능 (목록 조회)"})
@@ -23,29 +23,23 @@ public class FishingInfoPermitController {
     /*
         -검색-
         sortMethod => 오름차순 내림차순
-        
         + 정렬기준은 내 테이블에 있는거를 기준으로 잡아야함
-        sortBy 정렬기준 => 지역(area),세부지역(detailArea),항구(port),선상이름(name),출항일자(startDate, endDate),어종(target)
+        sortBy 정렬기준 => target(대상어종), startPoint(출항지), startDate(출항일자), reservationStatus(예약상태)
     */
 
     /* 출조 정보 검색 */
     @ApiOperation(value = "출조 정보 검색", notes = "출조 정보 목록을 출력합니다.")
     @GetMapping("/simpleList")
-    public List<ResFishingInfoDto> simpleInfoList(@ApiParam(value = "페이지 번호",required = true) @RequestParam int page,
-                                                  @ApiParam(value = "정렬 방법 : asc , desc",required = true) @RequestParam String sortMethod,
-                                                  @ApiParam(value = "정렬 기준 : target(대상어종), startPoint(출항지), startDate(출항일자), reservationStatus(예약상태)",required = true) @RequestParam String sortBy,
-                                                  @ApiParam(value = "지역 정보 : 강원도",required = true) @RequestParam String area,
-                                                  @ApiParam(value = "상세 지역 정보 : 고성",required = true) @RequestParam String detailArea,
-                                                  @ApiParam(value = "항구 이름 : 거진항",required = true) @RequestParam String port,
-                                                  @ApiParam(value = "배 이름 : 써니호",required = true) @RequestParam String shipName,
-                                                  @ApiParam(value = "대상 어종 : 광어",required = true) @RequestParam String target,
-                                                  @ApiParam(value = "예약 상태 : 예약가능, 예약마감",required = true) @RequestParam String status,
+    public List<ResFishingInfoDto> simpleInfoList(@ApiParam(value = "페이지 번호", required = true) @RequestParam int page,
+                                                  @ApiParam(value = "정렬 방법 : asc , desc", required = true) @RequestParam String sortMethod,
+                                                  @ApiParam(value = "정렬 기준 : id(선박 아이디), shipName(선박명)", required = true) @RequestParam String sortBy,
+                                                  @ApiParam(value = "검색 기준 : 지역, 상세 지역, 항구 ,선박명, 예약 상태, 출항 날짜, 전체", required = true) @RequestParam String searchBy,
+                                                  @ApiParam(value = "검색어 : 검색 기준에 맞는 검색어 입력", required = true) @RequestParam(required = false) String content,
+                                                  @ApiParam(value = "대상 어종 : 광어", required = true) @RequestParam String target,
                                                   @ApiParam(value = "출항 시간 : xxxx-xx-xxTxx:xx",required = true)
-                                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)@RequestParam(required = false) LocalDateTime startDate,
-                                                  @ApiParam(value = "입항 시간 : xxxx-xx-xxTxx:xx",required = true)
-                                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)@RequestParam(required = false) LocalDateTime endDate) {
+                                                      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate infoStartDate) {
 
-        return fishingInfoService.simpleInfoList(page, sortMethod, sortBy, area, detailArea, port, shipName, target, status, startDate, endDate);
+        return fishingInfoService.simpleInfoList(page, sortMethod, sortBy, searchBy, content, target, infoStartDate);
     }
 
     /* 출조 정보 상세 목록 */
