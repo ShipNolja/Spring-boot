@@ -27,6 +27,7 @@ public class ShipServiceImpl implements ShipService {
 
     @Override
     public List<ResShipInfoList> shipList(String area, String detailArea, String port, String shipName, String sortBy, String sortMethod, int page) {
+        
         Pageable pageable = null;
 
         if(sortMethod.equals("asc"))
