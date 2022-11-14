@@ -2,9 +2,7 @@ package com.shipnolja.reservation.fishinginfo.dto.response;
 
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,6 +32,8 @@ public class ResFishingInfoDto {
     private String infoReservationStatus;
 
     private Integer infoCapacity;
+
+    private String Image;
 
     private int totalPage;
 
