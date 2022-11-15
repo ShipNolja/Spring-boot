@@ -67,9 +67,6 @@ public class FishingInfoImpl implements FishingInfoService {
         Pageable pageable = null;
         Page<FishingInfo> fishingInfoPage = null;
 
-        System.out.println(infoStartDate);
-
-
         if(sortMethod.equals("asc")) {
             pageable = PageRequest.of(page,10, Sort.by(sortBy).ascending());
         } else if(sortMethod.equals("desc")) {

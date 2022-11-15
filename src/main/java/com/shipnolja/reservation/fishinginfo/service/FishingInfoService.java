@@ -17,5 +17,6 @@ public interface FishingInfoService {
     List<ResFishingInfoDto> simpleInfoList(int page, String sortMethod, String sortBy, String searchBy, String content,
                                            String target, LocalDate infoStartDate);
 
+    /* 출조 정보 상세 목록 */
     List<ResFishingInfoDto> detailsInfoList(int page, Long ship_id);
 }

@@ -27,7 +27,7 @@ public class Reservation {
 
     /* 예약자 전화번호 */
     @Column(name = "reservation_phone")
-    private String phone;
+    private String reservationPhone;
 
     /* 선박 전달사항 */
     @Column(name = "ship_message")
@@ -41,7 +41,9 @@ public class Reservation {
     @Column(name = "reservation_num")
     private int reservationNum;
 
-    /* 예약 상태 */
+    /* 예약 상태 
+    * 예약 취소, 예약 완료, 방문 완료
+    */
     @Column(name = "reservation_status")
     private String reservationStatus;
 
@@ -55,13 +57,19 @@ public class Reservation {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private FishingInfo fishingInfo;
 
+    /* insert시 예약완료 자동 입력 */
+    @PrePersist
+    public void status() {
+        this.reservationStatus = "예약완료";
+    }
+
     @Builder
-    public Reservation(Long reservationId, String reservationName, String phone, String shipMessage, String userMessage,
+    public Reservation(Long reservationId, String reservationName, String reservationPhone, String shipMessage, String userMessage,
                        int reservationNum, String reservationStatus, UserInfo userInfo, FishingInfo fishingInfo) {
 
         this.reservationId = reservationId;
         this.reservationName = reservationName;
-        this.phone = phone;
+        this.reservationPhone = reservationPhone;
         this.shipMessage = shipMessage;
         this.userMessage = userMessage;
         this.reservationNum = reservationNum;
