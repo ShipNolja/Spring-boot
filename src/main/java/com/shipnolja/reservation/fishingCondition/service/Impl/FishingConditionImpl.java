@@ -1,6 +1,7 @@
 package com.shipnolja.reservation.fishingCondition.service.Impl;
 
 import com.shipnolja.reservation.fishingCondition.dto.request.FishingConditionDto;
+import com.shipnolja.reservation.fishingCondition.dto.response.ResFishingConditionListDto;
 import com.shipnolja.reservation.fishingCondition.model.FishingCondition;
 import com.shipnolja.reservation.fishingCondition.repository.FishingConditionRepository;
 import com.shipnolja.reservation.fishingCondition.service.FishingConditionFilesService;
@@ -27,6 +28,7 @@ public class FishingConditionImpl implements FishingConditionService {
     private final FishingConditionRepository fishingConditionRepository;
     private final FishingConditionFilesService fishingConditionFilesService;
 
+    //조황정보 등록
     @Override
     public ResResultDto upload(UserInfo userInfo, FishingConditionDto fishingConditionDto, List<MultipartFile> files) {
 
@@ -79,4 +81,10 @@ public class FishingConditionImpl implements FishingConditionService {
         }
         return new ResResultDto(-1L,"게시글 업로드 실패."); //상품업로드 실패시 -1L반환
     }
+
+    @Override
+    public ResFishingConditionListDto list(String fish, String date, String searchWord, int page) {
+        return null;
+    }
+
 }

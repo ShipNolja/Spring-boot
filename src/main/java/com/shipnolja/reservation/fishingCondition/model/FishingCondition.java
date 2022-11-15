@@ -7,8 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,7 +37,7 @@ public class FishingCondition {
 
     //낚시한 날짜(xx일 조황 정보입니다)
     @Column(name = "date")
-    private String date;
+    private LocalDate date;
 
     //어종
     @Column(name = "fish")
@@ -43,10 +45,11 @@ public class FishingCondition {
     
     //게시글 업로드 날짜
     @Column(name = "upload_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime uploadDate;
 
     @Builder
-    public FishingCondition( ShipInfo shipInfo, String title, String content, String date, String fish, LocalDateTime uploadDate) {
+    public FishingCondition( ShipInfo shipInfo, String title, String content, LocalDate date, String fish, LocalDateTime uploadDate) {
         this.shipInfo = shipInfo;
         this.title = title;
         this.content = content;
