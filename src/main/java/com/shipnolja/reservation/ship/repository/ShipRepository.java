@@ -1,11 +1,14 @@
 package com.shipnolja.reservation.ship.repository;
 
 import com.shipnolja.reservation.ship.model.ShipInfo;
+import com.shipnolja.reservation.user.model.UserInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.Optional;
 
 public interface ShipRepository extends JpaRepository<ShipInfo,Long> {
     @Query(value = "select s from ShipInfo s " +
@@ -18,4 +21,6 @@ public interface ShipRepository extends JpaRepository<ShipInfo,Long> {
                                     @Param("area")String area,
                                     @Param("detailArea") String detailArea,
                                     Pageable pageable);
+
+    Optional<ShipInfo> findByUserInfo(UserInfo userInfo);
 }
