@@ -10,6 +10,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
@@ -29,10 +30,6 @@ public class Reservation {
     @Column(name = "reservation_phone")
     private String reservationPhone;
 
-    /* 선박 전달사항 */
-    @Column(name = "ship_message")
-    private String shipMessage;
-
     /* 예약자 전달사항 */
     @Column(name = "user_message")
     private String userMessage;
@@ -40,6 +37,10 @@ public class Reservation {
     /* 예약 인원 */
     @Column(name = "reservation_num")
     private int reservationNum;
+    
+    /* 예약 날짜 */
+    @Column(name = "reservation_date")
+    private LocalDate reservationDate;
 
     /* 예약 상태 
     * 예약 취소, 예약 완료, 방문 완료
@@ -64,15 +65,15 @@ public class Reservation {
     }
 
     @Builder
-    public Reservation(Long reservationId, String reservationName, String reservationPhone, String shipMessage, String userMessage,
-                       int reservationNum, String reservationStatus, UserInfo userInfo, FishingInfo fishingInfo) {
+    public Reservation(Long reservationId, String reservationName, String reservationPhone, String userMessage,
+                       LocalDate reservationDate, int reservationNum, String reservationStatus, UserInfo userInfo, FishingInfo fishingInfo) {
 
         this.reservationId = reservationId;
         this.reservationName = reservationName;
         this.reservationPhone = reservationPhone;
-        this.shipMessage = shipMessage;
         this.userMessage = userMessage;
         this.reservationNum = reservationNum;
+        this.reservationDate = reservationDate;
         this.reservationStatus = reservationStatus;
         this.userInfo = userInfo;
         this.fishingInfo = fishingInfo;

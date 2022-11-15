@@ -5,10 +5,36 @@ import com.shipnolja.reservation.ship.model.ShipInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
 public interface FishingInfoRepository extends JpaRepository<FishingInfo, Long> {
+
+    /* 예약 등록 시 수용 인원 감소 */
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("update FishingInfo fi set fi.infoCapacity = fi.infoCapacity - :reservationNum where fi.infoId = :infoId")
+    void updateReserveRegistration(@Param("reservationNum") int reservationNum,
+                                   @Param("infoId") Long info_id);
+
+    /* 예약 취소 시 수용 인원 증가 */
+    @Transactional
+    @Modifying
+    @Query("update FishingInfo fi set fi.infoCapacity = fi.infoCapacity - :reservationNum where fi.infoId = :infoId")
+    void updateReserveCancel(@Param("reservationNum") int reservationNum,
+                             @Param("infoId") Long info_id);
+
+    /* 예약 마감 상태 변경 */
+    @Transactional
+    @Modifying
+    @Query("update FishingInfo fi set fi.infoReservationStatus = :reservationStatus where fi.infoId = :infoId")
+    void updateStatusOff(@Param("reservationStatus") String reservationStatus,
+                         @Param("infoId") Long info_id);
+
 
     /* 해당 선박의 출조 정보 목록 */
     Page<FishingInfo> findByShipInfo(ShipInfo shipInfo, Pageable pageable);

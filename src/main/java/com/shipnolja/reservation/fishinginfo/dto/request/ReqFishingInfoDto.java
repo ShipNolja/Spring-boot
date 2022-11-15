@@ -53,7 +53,7 @@ public class ReqFishingInfoDto {
     /* 수용 인원 */
     @ApiModelProperty(value = "수용 인원", example = "xx명", required = true)
     @NotBlank(message = "수용 인원은 필수 입력입니다.")
-    private Integer infoCapacity;
+    private int infoCapacity;
 
     /* 출항일시 */
     @ApiModelProperty(value = "출항 일시", example = "xxxx(년)/xx(월)/xx(일)", required = true)

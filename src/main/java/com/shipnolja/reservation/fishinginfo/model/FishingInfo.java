@@ -43,7 +43,7 @@ public class FishingInfo {
     
     /* 수용 인원 */
     @Column(name = "info_capacity")
-    private Integer infoCapacity;
+    private int infoCapacity;
 
     /* 출항 시간 */
     @Column(name = "info_start_time")

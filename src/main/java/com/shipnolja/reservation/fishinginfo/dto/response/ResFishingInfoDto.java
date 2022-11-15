@@ -32,7 +32,7 @@ public class ResFishingInfoDto {
 
     private String infoReservationStatus;
 
-    private Integer infoCapacity;
+    private int infoCapacity;
 
     private String Image;
 
