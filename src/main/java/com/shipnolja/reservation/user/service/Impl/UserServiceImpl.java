@@ -190,7 +190,6 @@ public class UserServiceImpl implements UserService {
                 break;
             case "예약날짜" :
                 LocalDate reservationDate = LocalDate.parse(content, DateTimeFormatter.ISO_DATE);
-                System.out.println(reservationDate);
                 reservationPage = reservationRepository.findByUserInfoAndReservationDate(userInfo, reservationDate, pageable);
                 break;
         }

@@ -36,6 +36,7 @@ public interface FishingInfoRepository extends JpaRepository<FishingInfo, Long> 
                          @Param("infoId") Long info_id);
 
 
+
     /* 해당 선박의 출조 정보 목록 */
     Page<FishingInfo> findByShipInfo(ShipInfo shipInfo, Pageable pageable);
 
@@ -56,5 +57,9 @@ public interface FishingInfoRepository extends JpaRepository<FishingInfo, Long> 
     
     /* 출조 날짜 */
     Page<FishingInfo> findByInfoStartDate(LocalDate startDate, Pageable pageable);
+    
+    /* 사업자 마이페이지 */
+    Page<FishingInfo> findByShipInfoAndInfoStartDate(ShipInfo shipInfo, LocalDate startDate, Pageable pageable);
+    Page<FishingInfo> findByShipInfoAndInfoReservationStatusContaining(ShipInfo shipInfo, String content, Pageable pageable);
 
 }
