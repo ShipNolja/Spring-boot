@@ -1,5 +1,4 @@
 package com.shipnolja.reservation.fishinginfo.controller;
-
 import com.shipnolja.reservation.fishinginfo.dto.request.ReqFishingInfoDto;
 import com.shipnolja.reservation.fishinginfo.service.FishingInfoService;
 import com.shipnolja.reservation.user.annotation.LoginUser;
