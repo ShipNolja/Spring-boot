@@ -7,6 +7,7 @@ import com.shipnolja.reservation.fishingCondition.service.FishingConditionServic
 import com.shipnolja.reservation.user.annotation.LoginUser;
 import com.shipnolja.reservation.user.model.UserInfo;
 import com.shipnolja.reservation.util.responseDto.ResResultDto;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,13 +15,14 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
+
 import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
+@Api(tags = {"FishingCondition - 조황 정보 관련 기능 - 조회는 모든사용자 , 등록은 Manager"})
 public class FishingConditionController {
     private final FishingConditionService fishingConditionService;
     //조황 정보 작성

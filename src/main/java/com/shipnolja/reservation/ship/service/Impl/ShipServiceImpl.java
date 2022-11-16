@@ -26,7 +26,7 @@ public class ShipServiceImpl implements ShipService {
     private final WishRepository wishRepository;
 
     @Override
-    public List<ResShipInfoList> shipList(String area, String detailArea, String port, String shipName, String sortBy, String sortMethod, int page) {
+    public List<ResShipInfoList> shipList(String searchRequirements,String searchWord, String sortBy, String sortMethod, int page) {
         
         Pageable pageable = null;
 
@@ -34,6 +34,23 @@ public class ShipServiceImpl implements ShipService {
             pageable = PageRequest.of(page, 10, Sort.by(sortBy).ascending());
         else if(sortMethod.equals("desc"))
             pageable = PageRequest.of(page, 10, Sort.by(sortBy).descending());
+
+        String shipName = "",port = "",area = "",detailArea = "";
+
+        switch (searchRequirements) {
+            case "shipName":
+                shipName = searchWord;
+                break;
+            case "port":
+                port = searchWord;
+                break;
+            case "area":
+                area = searchWord;
+                break;
+            case "detailArea":
+                detailArea = searchWord;
+                break;
+        }
 
         Page<ShipInfo> shipInfoPage = shipRepository.findShipInfoList(
                 shipName,port,area,detailArea,pageable
