@@ -2,6 +2,7 @@ package com.shipnolja.reservation.fishinginfo.dto.response;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -23,7 +24,7 @@ public class ResFishingInfoDto {
 
     private String target;
 
-    private LocalDateTime startDate;
+    private LocalDate infoStartDate;
 
     private LocalDateTime startTime;
 
@@ -31,7 +32,7 @@ public class ResFishingInfoDto {
 
     private String infoReservationStatus;
 
-    private Integer infoCapacity;
+    private int infoCapacity;
 
     private String Image;
 

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -52,12 +53,12 @@ public class ReqFishingInfoDto {
     /* 수용 인원 */
     @ApiModelProperty(value = "수용 인원", example = "xx명", required = true)
     @NotBlank(message = "수용 인원은 필수 입력입니다.")
-    private Integer infoCapacity;
+    private int infoCapacity;
 
     /* 출항일시 */
     @ApiModelProperty(value = "출항 일시", example = "xxxx(년)/xx(월)/xx(일)", required = true)
     @NotBlank(message = "출항 일자는 필수 입력입니다.")
-    private LocalDateTime infoStartDate;
+    private LocalDate infoStartDate;
 
     /* 출항시간 */
     @ApiModelProperty(value = "출항시간", example = "xx(시):xx(분):xx(초)", required = true)

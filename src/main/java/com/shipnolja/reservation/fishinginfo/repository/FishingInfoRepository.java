@@ -5,34 +5,56 @@ import com.shipnolja.reservation.ship.model.ShipInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.time.LocalDate;
 
 public interface FishingInfoRepository extends JpaRepository<FishingInfo, Long> {
 
+    /* 예약 등록 시 수용 인원 감소 */
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("update FishingInfo fi set fi.infoCapacity = fi.infoCapacity - :reservationNum where fi.infoId = :infoId")
+    void updateReserveRegistration(@Param("reservationNum") int reservationNum,
+                                   @Param("infoId") Long info_id);
+
+    /* 예약 취소 시 수용 인원 증가 */
+    @Transactional
+    @Modifying
+    @Query("update FishingInfo fi set fi.infoCapacity = fi.infoCapacity - :reservationNum where fi.infoId = :infoId")
+    void updateReserveCancel(@Param("reservationNum") int reservationNum,
+                             @Param("infoId") Long info_id);
+
+    /* 예약 마감 상태 변경 */
+    @Transactional
+    @Modifying
+    @Query("update FishingInfo fi set fi.infoReservationStatus = :reservationStatus where fi.infoId = :infoId")
+    void updateStatusOff(@Param("reservationStatus") String reservationStatus,
+                         @Param("infoId") Long info_id);
+
+
+    /* 해당 선박의 출조 정보 목록 */
     Page<FishingInfo> findByShipInfo(ShipInfo shipInfo, Pageable pageable);
+
+    /* 지역명 */
+    Page<FishingInfo> findByShipInfo_AreaContaining(String content, Pageable pageable);
+
+    /* 예약 상태 */
+    Page<FishingInfo> findByInfoReservationStatusContaining(String content, Pageable pageable);
+
+    /* 상세 지역 */
+    Page<FishingInfo> findByShipInfo_DetailAreaContaining(String content, Pageable pageable);
+
+    /* 항구명 */
+    Page<FishingInfo> findByShipInfo_PortContaining(String content, Pageable pageable);
+
+    /* 선박명 */
+    Page<FishingInfo> findByShipInfo_NameContaining(String content, Pageable pageable);
     
-    /* 출조 목록 검색 */
-    @Query(value =
-            "select fi from FishingInfo fi join fi.shipInfo si "
-            + "where fi.infoTarget like %:target% "
-            + "and si.area like %:area% "
-            + "and si.detailArea like %:detailArea% "
-            + "and si.port like %:port% "
-            + "and si.name like %:shipName% "
-            + "and fi.infoReservationStatus like %:reservationStatus% "
-            + "and fi.infoStartDate between :startDate and :endDate"
-    )
-    Page<FishingInfo> searchFishingInfoList(@Param("target") String target,
-                                            @Param("startDate") LocalDateTime startDate,
-                                            @Param("endDate") LocalDateTime endDate,
-                                            @Param("area") String area,
-                                            @Param("detailArea") String detailArea,
-                                            @Param("port") String port,
-                                            @Param("shipName") String shipName,
-                                            @Param("reservationStatus") String status,
-                                            Pageable pageable);
+    /* 출조 날짜 */
+    Page<FishingInfo> findByInfoStartDate(LocalDate startDate, Pageable pageable);
+
 }
