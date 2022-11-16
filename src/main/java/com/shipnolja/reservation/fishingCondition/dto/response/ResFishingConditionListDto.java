@@ -2,6 +2,7 @@ package com.shipnolja.reservation.fishingCondition.dto.response;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ public class ResFishingConditionListDto {
     private String title;
 
     //낚시한 날짜(xx일 조황 정보입니다)
-    private String date;
+    private LocalDate date;
 
     //어종
     private String fish;
