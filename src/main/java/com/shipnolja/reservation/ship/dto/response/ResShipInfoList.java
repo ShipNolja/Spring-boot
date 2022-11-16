@@ -24,6 +24,8 @@ public class ResShipInfoList {
 
     private String streetAddress;
 
+    private Double shipRatingAvg;
+
     //찜 카운트
     private long wishCount;
 
