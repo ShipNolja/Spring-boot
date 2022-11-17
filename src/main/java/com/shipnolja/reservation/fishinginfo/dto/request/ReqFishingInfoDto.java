@@ -9,6 +9,7 @@ import lombok.ToString;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,9 +33,9 @@ public class ReqFishingInfoDto {
     private String infoTarget;
 
     /* 출항지 */
-    @ApiModelProperty(value = "출항지", example = "인천 중구 항동7가", required = true)
-    @NotBlank(message = "출항지는 필수 입력입니다.")
-    private String infoStartPoint;
+//    @ApiModelProperty(value = "출항지", example = "인천 중구 항동7가", required = true)
+//    @NotBlank(message = "출항지는 필수 입력입니다.")
+//    private String infoStartPoint;
 
     /* 예약상태 */
     @ApiModelProperty(value = "예약 상태", example = "예약 가능, 예약 마감", required = true)
@@ -42,9 +43,9 @@ public class ReqFishingInfoDto {
     private String infoReservationStatus;
 
     /* 집결지 */
-    @ApiModelProperty(value = "집결지", example = "인천 중구 항동7가", required = true)
-    @NotBlank(message = "집결지는 필수 입력입니다.")
-    private String infoAssemblePoint;
+//    @ApiModelProperty(value = "집결지", example = "인천 중구 항동7가", required = true)
+//    @NotBlank(message = "집결지는 필수 입력입니다.")
+//    private String infoAssemblePoint;
 
     /* 수용 인원 */
     @ApiModelProperty(value = "수용 인원", example = "xx명", required = true)
@@ -59,10 +60,10 @@ public class ReqFishingInfoDto {
     /* 출항시간 */
     @ApiModelProperty(value = "출항시간", example = "xx(시):xx(분):xx(초)", required = true)
     @NotBlank(message = "출항 시간은 필수 입력입니다.")
-    private LocalDateTime infoStartTime;
+    private LocalTime infoStartTime;
 
     /* 입항 시간 */
     @ApiModelProperty(value = "입항 시간", example = "xx(시):xx(분):xx(초)", required = true)
     @NotBlank(message = "입항 시간은 필수 입력입니다.")
-    private LocalDateTime infoEndTime;
+    private LocalTime infoEndTime;
 }
