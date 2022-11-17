@@ -17,12 +17,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.activation.MimetypesFileTypeMap;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static org.apache.coyote.http11.Constants.a;
 
 @RequiredArgsConstructor
 @Service
@@ -40,13 +46,22 @@ public class S3FileUploadService {
 
     public List<String> uploadFile(List<MultipartFile> multipartFile) {
         List<String> filePathList = new ArrayList<>();
+        MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
+
 
         // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
         multipartFile.forEach(file -> {
             String fileName = createFileName(file.getOriginalFilename());
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(file.getSize());
-            objectMetadata.setContentType(file.getContentType());
+
+
+            if (fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".jpeg")){
+                //파일 확장자에서 contentType 추출
+                mimeTypesMap.getContentType(fileName);
+                objectMetadata.setContentType(mimeTypesMap.getContentType(fileName));
+            }else return;
+
 
             try(InputStream inputStream = file.getInputStream()) {
                 amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
