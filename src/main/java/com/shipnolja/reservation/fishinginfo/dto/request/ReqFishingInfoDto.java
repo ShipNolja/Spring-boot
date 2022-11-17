@@ -1,5 +1,6 @@
 package com.shipnolja.reservation.fishinginfo.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -59,11 +60,13 @@ public class ReqFishingInfoDto {
 
     /* 출항시간 */
     @ApiModelProperty(value = "출항시간", example = "xx(시):xx(분):xx(초)", required = true)
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "Asia/Seoul")
     @NotBlank(message = "출항 시간은 필수 입력입니다.")
     private LocalTime infoStartTime;
 
     /* 입항 시간 */
     @ApiModelProperty(value = "입항 시간", example = "xx(시):xx(분):xx(초)", required = true)
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "Asia/Seoul")
     @NotBlank(message = "입항 시간은 필수 입력입니다.")
     private LocalTime infoEndTime;
 }
