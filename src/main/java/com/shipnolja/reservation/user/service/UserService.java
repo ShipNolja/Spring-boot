@@ -1,11 +1,14 @@
 package com.shipnolja.reservation.user.service;
 
 
+import com.shipnolja.reservation.reservation.dto.response.ResReservationListDto;
 import com.shipnolja.reservation.ship.dto.request.ShipInfoDto;
 import com.shipnolja.reservation.user.dto.request.UserInfoDto;
 import com.shipnolja.reservation.user.model.UserInfo;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface UserService extends UserDetailsService {
     //회원가입
@@ -22,5 +25,9 @@ public interface UserService extends UserDetailsService {
 
     //사업자 등록
     Long shipRegistration(UserInfo userInfo, ShipInfoDto shipInfoDto, MultipartFile file);
+
+    /* 회원 예약 목록 조회 (진모) */
+    List<ResReservationListDto> userReservationList(UserInfo userInfo, int page, String sortMethod, String searchBy, String content);
+
 
 }

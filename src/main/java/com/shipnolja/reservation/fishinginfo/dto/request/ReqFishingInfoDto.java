@@ -16,10 +16,6 @@ import java.time.LocalDateTime;
 @Getter
 public class ReqFishingInfoDto {
 
-    /* 선박 아이디 */
-    @ApiModelProperty(value = "선박 아이디", example = "선박 기본키 값", required = true)
-    private Long shipId;
-
     /* 공지사항 */
     @ApiModelProperty(value = "공지사항", example = "xx어종 출조 모집, 낚시대 대여 가능 등", required = true)
     @NotBlank(message = "공지사항은 필수 입력입니다.")

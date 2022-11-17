@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @ToString
 @Getter
 @Setter
-public class ResFishingInfoDto {
+public class ResFishingInfoListDto {
 
     private Long Id;
 

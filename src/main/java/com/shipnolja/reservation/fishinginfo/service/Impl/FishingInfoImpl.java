@@ -1,7 +1,7 @@
 package com.shipnolja.reservation.fishinginfo.service.Impl;
 
 import com.shipnolja.reservation.fishinginfo.dto.request.ReqFishingInfoDto;
-import com.shipnolja.reservation.fishinginfo.dto.response.ResFishingInfoDto;
+import com.shipnolja.reservation.fishinginfo.dto.response.ResFishingInfoListDto;
 import com.shipnolja.reservation.fishinginfo.model.FishingInfo;
 import com.shipnolja.reservation.fishinginfo.repository.FishingInfoRepository;
 import com.shipnolja.reservation.fishinginfo.service.FishingInfoService;
@@ -38,7 +38,7 @@ public class FishingInfoImpl implements FishingInfoService {
         UserInfo checkUserInfo = userRepository.findByIdAndRole(userInfo.getId(), UserRole.ROLE_MANAGER)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("매니저 사용자가 아닙니다."));
 
-        ShipInfo checkShipInfo = shipRepository.findById(reqFishingInfoDto.getShipId())
+        ShipInfo checkShipInfo = shipRepository.findByUserInfo(checkUserInfo)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("선박 정보를 찾을 수 없습니다."));
 
         FishingInfo fishingInfo = fishingInfoRepository.save(
@@ -62,8 +62,8 @@ public class FishingInfoImpl implements FishingInfoService {
 
     /* 출조 정보 목록 */
     @Override
-    public List<ResFishingInfoDto> simpleInfoList(int page, String sortMethod, String sortBy, String searchBy,
-                                                  String content, String target, LocalDate infoStartDate) {
+    public List<ResFishingInfoListDto> simpleInfoList(int page, String sortMethod, String sortBy, String searchBy,
+                                                      String content, String target, LocalDate infoStartDate) {
         Pageable pageable = null;
         Page<FishingInfo> fishingInfoPage = null;
 
@@ -94,7 +94,7 @@ public class FishingInfoImpl implements FishingInfoService {
                 break;
         }
 
-        List<ResFishingInfoDto> fishingInfoListDto = new ArrayList<>();
+        List<ResFishingInfoListDto> fishingInfoListDto = new ArrayList<>();
 
         if(fishingInfoPage != null) {
 
@@ -103,9 +103,8 @@ public class FishingInfoImpl implements FishingInfoService {
 
             fishingInfoPage.forEach(fishingInfo -> {
 
-                ResFishingInfoDto infoListDto = new ResFishingInfoDto();
+                ResFishingInfoListDto infoListDto = new ResFishingInfoListDto();
 
-                /* 이미지 추가 */
                 infoListDto.setId(fishingInfo.getInfoId());
                 infoListDto.setArea(fishingInfo.getShipInfo().getArea());
                 infoListDto.setDetailArea(fishingInfo.getShipInfo().getDetailArea());
@@ -131,7 +130,7 @@ public class FishingInfoImpl implements FishingInfoService {
 
     /* 출조 정보 상세 목록 */
     @Override
-    public List<ResFishingInfoDto> detailsInfoList(int page, Long ship_id) {
+    public List<ResFishingInfoListDto> detailsInfoList(int page, Long ship_id) {
 
         ShipInfo checkShipInfo = shipRepository.findById(ship_id)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("선박 정보를 찾을 수 없습니다."));
@@ -139,11 +138,11 @@ public class FishingInfoImpl implements FishingInfoService {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("infoStartDate").ascending());
         Page<FishingInfo> fishingInfoPage = fishingInfoRepository.findByShipInfo(checkShipInfo, pageable);
 
-        List<ResFishingInfoDto> fishingInfoListDto = new ArrayList<>();
+        List<ResFishingInfoListDto> fishingInfoListDto = new ArrayList<>();
 
         fishingInfoPage.forEach(fishingInfo -> {
 
-            ResFishingInfoDto infoListDto = new ResFishingInfoDto();
+            ResFishingInfoListDto infoListDto = new ResFishingInfoListDto();
 
             infoListDto.setId(fishingInfo.getInfoId());
             infoListDto.setArea(fishingInfo.getShipInfo().getArea());
