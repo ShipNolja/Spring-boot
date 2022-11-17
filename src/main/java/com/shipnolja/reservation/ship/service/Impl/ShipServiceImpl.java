@@ -95,6 +95,7 @@ public class ShipServiceImpl implements ShipService {
         return new ResManagerShipInfo(shipManagerInfo);
     }
 
+
     /* 내 출조 정보 목록 조회 */
     @Override
     public List<ResFishingInfoListDto> managerFishingInfoList(UserInfo userInfo, Long ship_id, String sortMethod, String searchBy, String content, int page) {
@@ -158,9 +159,9 @@ public class ShipServiceImpl implements ShipService {
         return fishingInfoList;
     }
 
-    /* 매니저 출조 예약자 목록 */
+    /* 출조 예약자 목록 */
     @Override
-    public ResReservationListDto managerReservationList(UserInfo userInfo, Long ship_id, Long info_id, String sortMethod, String searchBy, String content, int page) {
+    public List<ResReservationListDto> managerReservationList(UserInfo userInfo, Long ship_id, String sortMethod, String searchBy, String content, int page) {
 
         UserInfo checkUserInfo = userRepository.findByIdAndRole(userInfo.getId(), UserRole.ROLE_MANAGER)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("매니저 이용자만 사용할 수 있습니다."));
@@ -168,20 +169,59 @@ public class ShipServiceImpl implements ShipService {
         ShipInfo checkShipInfo = shipRepository.findById(ship_id)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("선박 정보를 찾을 수 없습니다."));
 
-        FishingInfo checkFishingInfo = fishingInfoRepository.findById(info_id)
-                .orElseThrow(() -> new CustomException.ResourceNotFoundException("출조 정보를 찾을 수 없습니다."));
-
-        Pageable pageable = null;
-        Page<Reservation> reservationPage = null;
+        List<FishingInfo> checkFishingInfo = fishingInfoRepository.findByShipInfo(checkShipInfo);
 
         List<ResReservationListDto> reservationList = new ArrayList<>();
 
-        if(sortMethod.equals("asc")) {
-            pageable = PageRequest.of(page,10, Sort.by("reservationDate").ascending());
-        } else if(sortMethod.equals("desc")) {
-            pageable = PageRequest.of(page, 10, Sort.by("reservationDate").descending());
-        }
+        checkFishingInfo.forEach(fishingInfo -> {
 
-        return null;
+            Pageable pageable = null;
+            Page<Reservation> reservationPage = null;
+
+            if(sortMethod.equals("asc")) {
+                pageable = PageRequest.of(page,10, Sort.by("reservationDate").ascending());
+            } else if(sortMethod.equals("desc")) {
+                pageable = PageRequest.of(page, 10, Sort.by("reservationDate").descending());
+            }
+
+            switch (searchBy) {
+                case "출조날짜" :
+                    LocalDate reservationDate = LocalDate.parse(content, DateTimeFormatter.ISO_DATE);
+                    reservationPage = reservationRepository.findByFishingInfoAndReservationDate(fishingInfo, reservationDate, pageable);
+                    break;
+                case "예약자명" :
+                    reservationPage = reservationRepository.findByFishingInfoAndReservationNameContaining(fishingInfo, content, pageable);
+                    break;
+                case "전체" :
+                    /* 선박이 올린 출조 정보 순회하면서 등록한 모든 출조 정보의 예약자 출력 */
+                    reservationPage = reservationRepository.findByFishingInfo(fishingInfo, pageable);
+            }
+
+            if(reservationPage != null) {
+
+                int totalPages = reservationPage.getTotalPages();
+                long totalElements = reservationPage.getTotalElements();
+
+                reservationPage.forEach(reservation -> {
+
+                    ResReservationListDto resReservationListDto = new ResReservationListDto();
+
+                    resReservationListDto.setReservationId(reservation.getReservationId());
+                    resReservationListDto.setFishingInfoId(fishingInfo.getInfoId());
+                    resReservationListDto.setReservationName(reservation.getReservationName());
+                    resReservationListDto.setReservationNum(reservation.getReservationNum());
+                    resReservationListDto.setReservationDate(reservation.getReservationDate());
+                    resReservationListDto.setReservationPhone(reservation.getReservationPhone());
+                    resReservationListDto.setUserMessage(reservation.getUserMessage());
+                    resReservationListDto.setReservationStatus(reservation.getReservationStatus());
+                    resReservationListDto.setTotalPage(totalPages);
+                    resReservationListDto.setTotalElement(totalElements);
+
+                    reservationList.add(resReservationListDto);
+                });
+            }
+        });
+
+        return reservationList;
     }
 }

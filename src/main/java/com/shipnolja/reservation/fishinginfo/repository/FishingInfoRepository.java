@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface FishingInfoRepository extends JpaRepository<FishingInfo, Long> {
 
@@ -59,6 +60,7 @@ public interface FishingInfoRepository extends JpaRepository<FishingInfo, Long> 
     Page<FishingInfo> findByInfoStartDate(LocalDate startDate, Pageable pageable);
     
     /* 사업자 마이페이지 */
+    List<FishingInfo> findByShipInfo(ShipInfo shipInfo);
     Page<FishingInfo> findByShipInfoAndInfoStartDate(ShipInfo shipInfo, LocalDate startDate, Pageable pageable);
     Page<FishingInfo> findByShipInfoAndInfoReservationStatusContaining(ShipInfo shipInfo, String content, Pageable pageable);
 

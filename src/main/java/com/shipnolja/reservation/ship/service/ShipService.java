@@ -18,7 +18,7 @@ public interface ShipService {
     ResManagerShipInfo shipMangerInfo(Long id);
 
     /* 매니저 출조 예약자 목록 (진모) */
-    ResReservationListDto managerReservationList(UserInfo userInfo, Long ship_id, Long info_id, String sortMethod, String searchBy, String content, int page);
+    List<ResReservationListDto> managerReservationList(UserInfo userInfo, Long ship_id, String sortMethod, String searchBy, String content, int page);
 
     List<ResFishingInfoListDto> managerFishingInfoList(UserInfo userInfo, Long ship_id, String sortMethod, String searchBy, String content, int page);
 }

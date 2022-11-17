@@ -44,15 +44,14 @@ public class ShipManagerController {
     /* 출조 예약자 목록 */
     @ApiOperation(value = "출조 예약자 목록",notes = "해당 출조 목록 예약자를 확인합니다.")
     @GetMapping("reservationList")
-    public ResReservationListDto managerReservationList(@LoginUser UserInfo userInfo,
+    public List<ResReservationListDto> managerReservationList(@LoginUser UserInfo userInfo,
                                                         @ApiParam(value = "선박 아이디", required = true) @RequestParam Long ship_id,
-                                                        @ApiParam(value = "출조 정보 아이디", required = true) @RequestParam Long info_id,
                                                         @ApiParam(value = "정렬 방법 : asc , desc", required = true) @RequestParam String sortMethod,
                                                         @ApiParam(value = "검색 기준 : 예약자명, 출조날짜", required = true) @RequestParam String searchBy,
-                                                        @ApiParam(value = "검색값 : xxx(예약자명), xxxx(년)-xx(월)-xx(일)", required = true) @RequestParam String content,
+                                                        @ApiParam(value = "검색값 : xxx(예약자명), xxxx(년)-xx(월)-xx(일)", required = true) @RequestParam(required = false) String content,
                                                         int page) {
 
-        return shipService.managerReservationList(userInfo, ship_id, info_id, sortMethod, searchBy, content, page);
+        return shipService.managerReservationList(userInfo, ship_id, sortMethod, searchBy, content, page);
     }
 
 }

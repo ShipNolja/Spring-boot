@@ -38,7 +38,7 @@ public class FishingInfoImpl implements FishingInfoService {
         UserInfo checkUserInfo = userRepository.findByIdAndRole(userInfo.getId(), UserRole.ROLE_MANAGER)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("매니저 사용자가 아닙니다."));
 
-        ShipInfo checkShipInfo = shipRepository.findById(reqFishingInfoDto.getShipId())
+        ShipInfo checkShipInfo = shipRepository.findByUserInfo(checkUserInfo)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("선박 정보를 찾을 수 없습니다."));
 
         FishingInfo fishingInfo = fishingInfoRepository.save(
