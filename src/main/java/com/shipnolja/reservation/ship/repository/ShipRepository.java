@@ -23,4 +23,8 @@ public interface ShipRepository extends JpaRepository<ShipInfo,Long> {
                                     Pageable pageable);
 
     Optional<ShipInfo> findByUserInfo(UserInfo userInfo);
+
+    //선박 평점
+    @Query("select Avg(r.reviewRating) from Review r where r.reservation.fishingInfo.shipInfo = :shipInfo")
+    Double findShipRating(@Param("shipInfo") ShipInfo shipInfo);
 }

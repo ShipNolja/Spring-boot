@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ShipService {
     //선박 리스트 검색
-    List<ResShipInfoList> shipList(String area, String detailArea,String port, String shipName,String sortBy,String sortMethod,int page);
+    List<ResShipInfoList> shipList(String searchRequirements,String searchWord,String sortBy,String sortMethod,int page);
 
     ResShipInfo shipInfo(Long id);
 

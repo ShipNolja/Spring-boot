@@ -39,8 +39,9 @@ public class ShipServiceImpl implements ShipService {
     private final FishingInfoRepository fishingInfoRepository;
     private final ReservationRepository reservationRepository;
 
+    //선박 리스트 조회
     @Override
-    public List<ResShipInfoList> shipList(String area, String detailArea, String port, String shipName, String sortBy, String sortMethod, int page) {
+    public List<ResShipInfoList> shipList(String searchRequirements,String searchWord, String sortBy, String sortMethod, int page) {
         
         Pageable pageable = null;
 
@@ -48,6 +49,23 @@ public class ShipServiceImpl implements ShipService {
             pageable = PageRequest.of(page, 10, Sort.by(sortBy).ascending());
         else if(sortMethod.equals("desc"))
             pageable = PageRequest.of(page, 10, Sort.by(sortBy).descending());
+
+        String shipName = "",port = "",area = "",detailArea = "";
+
+        switch (searchRequirements) {
+            case "shipName":
+                shipName = searchWord;
+                break;
+            case "port":
+                port = searchWord;
+                break;
+            case "area":
+                area = searchWord;
+                break;
+            case "detailArea":
+                detailArea = searchWord;
+                break;
+        }
 
         Page<ShipInfo> shipInfoPage = shipRepository.findShipInfoList(
                 shipName,port,area,detailArea,pageable
@@ -57,8 +75,17 @@ public class ShipServiceImpl implements ShipService {
 
         List<ResShipInfoList> shipInfoListDto = new ArrayList<>();
 
+
+
         shipInfoList.forEach(entity->{
             ResShipInfoList listDto = new ResShipInfoList();
+            double shipRatingAvg; // 상품 평점
+            if(shipRepository.findShipRating(entity)==null){
+                shipRatingAvg = 0;
+            }else {
+                shipRatingAvg = Math.round(shipRepository.findShipRating(entity) * 10) / 10.0;
+            }
+
             listDto.setId(entity.getId());
             listDto.setImage(entity.getImage());
             listDto.setName(entity.getName());
@@ -67,6 +94,7 @@ public class ShipServiceImpl implements ShipService {
             listDto.setPort(entity.getPort());
             listDto.setStreetAddress(entity.getStreetAddress());
             listDto.setWishCount(wishRepository.countByShipInfo(entity));
+            listDto.setShipRatingAvg(shipRatingAvg);
             listDto.setTotalPage(shipInfoPage.getTotalPages());
             listDto.setTotalElement(shipInfoPage.getTotalElements());
             shipInfoListDto.add(listDto);
@@ -82,8 +110,14 @@ public class ShipServiceImpl implements ShipService {
                 () -> new CustomException.ResourceNotFoundException("선상 정보를 찾을 수 없습니다")
         );
 
+        double shipRatingAvg; // 상품 평점
 
-        return new ResShipInfo(shipInfo,wishRepository.countByShipInfo(shipInfo));
+        if(shipRepository.findShipRating(shipInfo)==null){
+            shipRatingAvg = 0;
+        }else {
+            shipRatingAvg = Math.round(shipRepository.findShipRating(shipInfo) * 10) / 10.0;
+        }
+        return new ResShipInfo(shipInfo,wishRepository.countByShipInfo(shipInfo),shipRatingAvg);
     }
 
     @Override
