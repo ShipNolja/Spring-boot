@@ -123,7 +123,6 @@ public class UserServiceImpl implements UserService {
 
         //File로 저장 경로와 저장 할 파일명 합쳐서 transferTo() 사용하여 업로드하려는 파일을 해당 경로로 저장
         String filepath = savePath + "//" + saveFileName;
-        String dbFilePath = "../shipImage/" + saveFileName;
 
         try {
             file.transferTo(new File(filepath));
@@ -139,7 +138,7 @@ public class UserServiceImpl implements UserService {
                         ShipInfo.builder()
                                 .userInfo(registerUserInfo)
                                 .registerNumber(shipInfoDto.getRegisterNumber())
-                                .image(dbFilePath)
+                                .image(filepath)
                                 .name(shipInfoDto.getName())
                                 .bankName(shipInfoDto.getBankName())
                                 .bankNum(shipInfoDto.getBankNum())
