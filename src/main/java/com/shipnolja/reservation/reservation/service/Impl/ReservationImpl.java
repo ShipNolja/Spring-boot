@@ -82,6 +82,6 @@ public class ReservationImpl implements ReservationService {
             fishingInfoRepository.updateStatusOff("예약마감", newFishingInfo.getInfoId());
         }
 
-        return new ResResultDto(reservation.getReservationId(), "예약을 완료 했습니다.");
+        return new ResResultDto(reservation.getReservationId(), "예약을 등록 했습니다.");
     }
 }

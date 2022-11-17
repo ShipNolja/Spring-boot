@@ -16,6 +16,7 @@ import com.shipnolja.reservation.user.model.UserInfo;
 import com.shipnolja.reservation.user.model.UserRole;
 import com.shipnolja.reservation.user.repository.UserRepository;
 import com.shipnolja.reservation.util.exception.CustomException;
+import com.shipnolja.reservation.util.responseDto.ResResultDto;
 import com.shipnolja.reservation.wish.repository.WishRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -130,14 +131,14 @@ public class ShipServiceImpl implements ShipService {
     }
 
 
-    /* 내 출조 정보 목록 조회 */
+    /* 등록한 출조 목록 */
     @Override
-    public List<ResFishingInfoListDto> managerFishingInfoList(UserInfo userInfo, Long ship_id, String sortMethod, String searchBy, String content, int page) {
+    public List<ResFishingInfoListDto> managerFishingInfoList(UserInfo userInfo, String sortMethod, String searchBy, String content, int page) {
 
         UserInfo checkUserInfo = userRepository.findByIdAndRole(userInfo.getId(), UserRole.ROLE_MANAGER)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("매니저 이용자만 사용할 수 있습니다."));
 
-        ShipInfo checkShipInfo = shipRepository.findById(ship_id)
+        ShipInfo checkShipInfo = shipRepository.findByUserInfo(checkUserInfo)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("선박 정보를 찾을 수 없습니다."));
 
         Pageable pageable = null;
@@ -195,12 +196,12 @@ public class ShipServiceImpl implements ShipService {
 
     /* 출조 예약자 목록 */
     @Override
-    public List<ResReservationListDto> managerReservationList(UserInfo userInfo, Long ship_id, String sortMethod, String searchBy, String content, int page) {
+    public List<ResReservationListDto> managerReservationList(UserInfo userInfo, String sortMethod, String searchBy, String content, int page) {
 
         UserInfo checkUserInfo = userRepository.findByIdAndRole(userInfo.getId(), UserRole.ROLE_MANAGER)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("매니저 이용자만 사용할 수 있습니다."));
 
-        ShipInfo checkShipInfo = shipRepository.findById(ship_id)
+        ShipInfo checkShipInfo = shipRepository.findByUserInfo(checkUserInfo)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("선박 정보를 찾을 수 없습니다."));
 
         List<FishingInfo> checkFishingInfo = fishingInfoRepository.findByShipInfo(checkShipInfo);
@@ -226,6 +227,8 @@ public class ShipServiceImpl implements ShipService {
                 case "예약자명" :
                     reservationPage = reservationRepository.findByFishingInfoAndReservationNameContaining(fishingInfo, content, pageable);
                     break;
+                case "예약상태" :
+                    reservationPage = reservationRepository.findByFishingInfoAndReservationStatus(fishingInfo, content, pageable);
                 case "전체" :
                     /* 선박이 올린 출조 정보 순회하면서 등록한 모든 출조 정보의 예약자 출력 */
                     reservationPage = reservationRepository.findByFishingInfo(fishingInfo, pageable);
@@ -257,5 +260,34 @@ public class ShipServiceImpl implements ShipService {
         });
 
         return reservationList;
+    }
+
+    /* 예약자 상태 변경 */
+    @Override
+    public ResResultDto managerStatusUpdate(UserInfo userInfo, Long fishingInfo_id, Long reservation_id, String status) {
+
+        UserInfo checkUserInfo = userRepository.findByIdAndRole(userInfo.getId(), UserRole.ROLE_MANAGER)
+                .orElseThrow(() -> new CustomException.ResourceNotFoundException("매니저 이용자만 사용할 수 있습니다."));
+
+        ShipInfo checkShipInfo = shipRepository.findByUserInfo(checkUserInfo)
+                .orElseThrow(() -> new CustomException.ResourceNotFoundException("선박 정보를 찾을 수 없습니다."));
+
+        FishingInfo checkFishingInfo = fishingInfoRepository.findByShipInfoAndInfoId(checkShipInfo, fishingInfo_id)
+                .orElseThrow(() -> new CustomException.ResourceNotFoundException("출조 정보를 찾을 수 없습니다."));
+
+        Reservation checkReservation = reservationRepository.findByFishingInfoAndReservationId(checkFishingInfo, reservation_id)
+                .orElseThrow(() -> new CustomException.ResourceNotFoundException("예약 정보를 찾을 수 없습니다."));
+
+        if(checkReservation.getReservationStatus().equals("예약대기") && status.equals("예약완료")) {
+            /* 예약완료 상태로 변경 */
+            reservationRepository.statusUpdate(status, reservation_id);
+        } else if(checkReservation.getReservationStatus().equals("예약완료") && status.equals("방문완료")) {
+            /* 방문완료 상태로 변경 */
+            reservationRepository.statusUpdate(status, reservation_id);
+        } else {
+            return new ResResultDto(-1L,"변경할 수 없는 상태입니다.");
+        }
+
+        return new ResResultDto(checkReservation.getReservationId(),"예약 상태를 변경 했습니다.");
     }
 }

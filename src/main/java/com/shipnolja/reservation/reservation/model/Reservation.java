@@ -43,7 +43,7 @@ public class Reservation {
     private LocalDate reservationDate;
 
     /* 예약 상태 
-    * 예약 취소, 예약 완료, 방문 완료
+    * 예약 취소, 예약 완료, 방문 완료, 예약 대기
     */
     @Column(name = "reservation_status")
     private String reservationStatus;
@@ -61,7 +61,7 @@ public class Reservation {
     /* insert시 예약완료 자동 입력 */
     @PrePersist
     public void status() {
-        this.reservationStatus = "예약완료";
+        this.reservationStatus = "예약대기";
     }
 
     @Builder

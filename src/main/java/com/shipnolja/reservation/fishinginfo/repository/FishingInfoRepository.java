@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface FishingInfoRepository extends JpaRepository<FishingInfo, Long> {
 
@@ -28,6 +29,8 @@ public interface FishingInfoRepository extends JpaRepository<FishingInfo, Long> 
     @Query("update FishingInfo fi set fi.infoCapacity = fi.infoCapacity - :reservationNum where fi.infoId = :infoId")
     void updateReserveCancel(@Param("reservationNum") int reservationNum,
                              @Param("infoId") Long info_id);
+
+
 
     /* 예약 마감 상태 변경 */
     @Transactional
@@ -61,6 +64,8 @@ public interface FishingInfoRepository extends JpaRepository<FishingInfo, Long> 
     
     /* 사업자 마이페이지 */
     List<FishingInfo> findByShipInfo(ShipInfo shipInfo);
+
+    Optional<FishingInfo> findByShipInfoAndInfoId(ShipInfo shipInfo, Long fishingInfo_id);
     Page<FishingInfo> findByShipInfoAndInfoStartDate(ShipInfo shipInfo, LocalDate startDate, Pageable pageable);
     Page<FishingInfo> findByShipInfoAndInfoReservationStatusContaining(ShipInfo shipInfo, String content, Pageable pageable);
 
