@@ -25,7 +25,7 @@ public interface UserService extends UserDetailsService {
     UserInfo userInfoCheck(UserInfo userInfo);
 
     //사업자 등록
-    Long shipRegistration(UserInfo userInfo, ShipInfoDto shipInfoDto, MultipartFile file);
+    Long shipRegistration(UserInfo userInfo, ShipInfoDto shipInfoDto, List<MultipartFile> files);
 
     /* 회원 예약 목록 조회 */
     List<ResReservationListDto> userReservationList(UserInfo userInfo, int page, String sortMethod, String searchBy, String content);
