@@ -32,12 +32,11 @@ public class FishingInfoPermitController {
     @GetMapping("/simpleList")
     public List<ResFishingInfoListDto> simpleInfoList(@ApiParam(value = "페이지 번호", required = true) @RequestParam int page,
                                                       @ApiParam(value = "정렬 방법 : asc , desc", required = true) @RequestParam String sortMethod,
-                                                      @ApiParam(value = "정렬 기준 : id(선박 아이디), shipName(선박명)", required = true) @RequestParam String sortBy,
-                                                      @ApiParam(value = "검색 기준 : 지역, 상세 지역, 항구 ,선박명, 예약 상태, 출항 날짜, 전체", required = true) @RequestParam String searchBy,
-                                                      @ApiParam(value = "검색어 : 검색 기준에 맞는 검색어 입력", required = true) @RequestParam(required = false) String content,
-                                                      @ApiParam(value = "대상 어종 : 광어", required = true) @RequestParam String target,
-                                                      @ApiParam(value = "출항 시간 : xxxx-xx-xxTxx:xx",required = true)
-                                                      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate infoStartDate) {
+                                                      @ApiParam(value = "정렬 기준 : infoStartDate(출조날짜순), shipInfo(선박순), infoCapacity(수용인원순)", required = true) @RequestParam String sortBy,
+                                                      @ApiParam(value = "검색 기준 : 지역, 상세 지역, 항구 ,선박명, 예약 상태, 출항 날짜, 전체", required = false) @RequestParam(required = false) String searchBy,
+                                                      @ApiParam(value = "검색어 : 검색 기준에 맞는 검색어 입력", required = false) @RequestParam(required = false) String content,
+                                                      @ApiParam(value = "대상 어종 : 광어", required = false) @RequestParam(required = false) String target,
+                                                      @ApiParam(value = "출항 시간 : xxxx(년)-xx(월)-xx(일)",required = false) @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate infoStartDate) {
 
         return fishingInfoService.simpleInfoList(page, sortMethod, sortBy, searchBy, content, target, infoStartDate);
     }

@@ -43,7 +43,7 @@ public class Reservation {
     private LocalDate reservationDate;
 
     /* 예약 상태 
-    * 예약 취소, 예약 완료, 방문 완료
+    * 예약 취소(db 삭제), 예약 완료, 방문 완료
     */
     @Column(name = "reservation_status")
     private String reservationStatus;

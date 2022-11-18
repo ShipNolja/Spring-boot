@@ -45,7 +45,7 @@ public class UserController {
         return new ResResultDto(result,"선박 등록을 성공했습니다");
     }
 
-    /* 회원 예약 목록 조회 (진모)*/
+    /* 회원 예약 목록 조회 */
     @ApiOperation(value = "회원 예약 목록 조회",notes = "회원이 예약한 목록을 조회합니다.")
     @GetMapping("/reservationList")
     public List<ResReservationListDto> userReservationList(@LoginUser UserInfo userInfo,
@@ -57,4 +57,13 @@ public class UserController {
         return userService.userReservationList(userInfo, page, sortMethod, searchBy, content);
     }
 
+    /* 회원 예약 상태 변경 */
+    @ApiOperation(value = "회원 예약 취소",notes = "회원이 예약한 출조 정보를 취소합니다.")
+    @DeleteMapping("/statusUpdate")
+    public ResResultDto userStatusUpdate(@LoginUser UserInfo userInfo,
+                                         @ApiParam(value = "예약 아이디", required = true) @RequestParam Long reservation_id,
+                                         @ApiParam(value = "상태 변경 값", required = true) @RequestParam String status) {
+
+        return userService.userStatusUpdate(userInfo, reservation_id, status);
+    }
 }
