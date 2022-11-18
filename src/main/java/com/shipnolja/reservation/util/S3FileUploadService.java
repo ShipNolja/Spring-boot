@@ -53,7 +53,6 @@ public class S3FileUploadService {
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(file.getSize());
 
-            if (fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".jpeg")){
                 //파일 확장자에서 contentType 추출
                 mimeTypesMap.getContentType(fileName);
                 objectMetadata.setContentType(mimeTypesMap.getContentType(fileName));
@@ -66,8 +65,7 @@ public class S3FileUploadService {
                 }
 
                 filePathList.add(defaultUrl +"/"+ fileName);
-            }
-            else return;
+
         });
 
         return filePathList;
@@ -75,7 +73,7 @@ public class S3FileUploadService {
 
 
 
-    //조황 정보 사진 저장
+//조황 정보 사진 저장
     public List<ResFileDto> uploadFishingConditionFile(List<MultipartFile> multipartFile) {
         MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
         List<ResFileDto> resFileList = new ArrayList<>();
@@ -88,7 +86,6 @@ public class S3FileUploadService {
 
             mimeTypesMap.getContentType(fileName);
             objectMetadata.setContentType(mimeTypesMap.getContentType(fileName));
-
 
 
             try(InputStream inputStream = file.getInputStream()) {

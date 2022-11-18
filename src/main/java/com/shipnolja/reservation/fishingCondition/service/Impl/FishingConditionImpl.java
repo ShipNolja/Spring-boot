@@ -13,6 +13,7 @@ import com.shipnolja.reservation.ship.model.ShipInfo;
 import com.shipnolja.reservation.ship.repository.ShipRepository;
 import com.shipnolja.reservation.user.model.UserInfo;
 import com.shipnolja.reservation.user.repository.UserRepository;
+import com.shipnolja.reservation.util.S3FileUploadService;
 import com.shipnolja.reservation.util.exception.CustomException;
 import com.shipnolja.reservation.util.responseDto.ResResultDto;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,10 +39,11 @@ public class FishingConditionImpl implements FishingConditionService {
     private final ShipRepository shipRepository;
     private final FishingConditionRepository fishingConditionRepository;
     private final FishingConditionFilesRepository fishingConditionFilesRepository;
+    private final S3FileUploadService s3FileUploadService;
 
     //조황정보 등록
     @Override
-    public ResResultDto upload(UserInfo userInfo, FishingConditionDto fishingConditionDto,  List<ResFileDto> files) {
+    public ResResultDto upload(UserInfo userInfo, FishingConditionDto fishingConditionDto,  List<MultipartFile> files) {
 
         UserInfo uploadUser = userRepository.findById(userInfo.getId()).orElseThrow(
                 () -> new CustomException.ResourceNotFoundException("사용자 정보를 찾을 수 없습니다.")
@@ -48,6 +52,7 @@ public class FishingConditionImpl implements FishingConditionService {
         ShipInfo uploadShip = shipRepository.findByUserInfo(uploadUser).orElseThrow(
                 () -> new CustomException.ResourceNotFoundException("회사 정보를 찾을 수 없습니다.")
         );
+
         FishingCondition fishingCondition = fishingConditionRepository.save(
                 FishingCondition.builder()
                         .shipInfo(uploadShip)
@@ -59,22 +64,36 @@ public class FishingConditionImpl implements FishingConditionService {
                         .build()
         );
 
-        for(ResFileDto resFileDto : files){
-            FishingConditionFiles.builder()
-                    .saveName(resFileDto.getSaveName())
-                    .path(resFileDto.getFilePath())
-                    .origin(resFileDto.getOrigin())
-                    .fishingCondition(fishingCondition)
-                    .build();
-        }
+        if(!CollectionUtils.isEmpty(files)){
+            for(MultipartFile multipartFile : files){
+                String originFileName = multipartFile.getOriginalFilename();
+                if (originFileName.endsWith(".jpg") || originFileName.endsWith(".png") || originFileName.endsWith(".jpeg")) {
+                }else{
+                    return new ResResultDto(-1L,"jpg,png,jpeg 확장자만 사용 가능합니다.");
+                }
+            }
 
-        return new ResResultDto(fishingCondition.getId(),"조황 정보를 등록하였습니다.");
+            List<ResFileDto> resFileDtoList = s3FileUploadService.uploadFishingConditionFile(files);
+
+            for(ResFileDto resFileDto : resFileDtoList){
+                fishingConditionFilesRepository.save(
+                        FishingConditionFiles.builder()
+                                .saveName(resFileDto.getSaveName())
+                                .path(resFileDto.getFilePath())
+                                .origin(resFileDto.getOrigin())
+                                .fishingCondition(fishingCondition)
+                                .build()
+                );
+            }
+            return new ResResultDto(fishingCondition.getId(),"사진 포함 조황 정보를 등록하였습니다.");
+        }
+        else return new ResResultDto(fishingCondition.getId(),"조황 정보를 등록하였습니다.");
 
     }
 
     //조황 정보 목록
     @Override
-    public List<ResFishingConditionListDto> list(String fish, LocalDate date, String title, String sortBy, String sortMethod, int page) {
+    public List<ResFishingConditionListDto> list(String fish, LocalDate startDate,LocalDate endDate ,String title, String sortBy, String sortMethod, int page) {
         Pageable pageable = null;
 
         if(sortMethod.equals("asc")) {
@@ -83,21 +102,29 @@ public class FishingConditionImpl implements FishingConditionService {
             pageable = PageRequest.of(page, 10, Sort.by(sortBy).descending());
         }
 
-        Page<FishingCondition> fishingConditionPage = fishingConditionRepository.findByFishContainingAndDateAndTitleContaining(fish,date,title,pageable);
+        Page<FishingCondition> fishingConditionPage = fishingConditionRepository.findByFishContainingAndTitleContainingAndDateBetween(fish,title,startDate,endDate,pageable);
 
         List<ResFishingConditionListDto> resFishingConditionList = new ArrayList<>();
 
         fishingConditionPage.forEach(entity->{
             ResFishingConditionListDto listDto = new ResFishingConditionListDto();
 
-            FishingConditionFiles fishingConditionFiles = fishingConditionFilesRepository.findFirstByFishingCondition(entity).orElseThrow(
-                    ()->new CustomException.ResourceNotFoundException("이미지가 없습니다.")
-            );
-            listDto.setId(entity.getId());
-            listDto.setDate(entity.getDate());
-            listDto.setTitle(entity.getTitle());
-            listDto.setFish(entity.getFish());
-            listDto.setFile(fishingConditionFiles.getPath());
+
+                    if(fishingConditionFilesRepository.findFirstByFishingCondition(entity).isEmpty()){
+                        listDto.setId(entity.getId());
+                        listDto.setDate(entity.getDate());
+                        listDto.setTitle(entity.getTitle());
+                        listDto.setFish(entity.getFish());
+                        listDto.setFile(null);
+                    }else if(fishingConditionFilesRepository.findFirstByFishingCondition(entity).isPresent()){
+                        FishingConditionFiles fishingConditionFiles = fishingConditionFilesRepository.findFirstByFishingCondition(entity).get();
+                        listDto.setId(entity.getId());
+                        listDto.setDate(entity.getDate());
+                        listDto.setTitle(entity.getTitle());
+                        listDto.setFish(entity.getFish());
+                        listDto.setFile(fishingConditionFiles.getPath());
+                    }
+
 
             resFishingConditionList.add(listDto);
             }

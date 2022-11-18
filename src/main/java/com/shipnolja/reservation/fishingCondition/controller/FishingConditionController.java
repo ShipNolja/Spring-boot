@@ -1,5 +1,6 @@
 package com.shipnolja.reservation.fishingCondition.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.shipnolja.reservation.fishingCondition.dto.request.FishingConditionDto;
 import com.shipnolja.reservation.fishingCondition.dto.response.ResFishingConditionDto;
 import com.shipnolja.reservation.fishingCondition.dto.response.ResFishingConditionListDto;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,25 +33,23 @@ public class FishingConditionController {
     @PostMapping(value = "/manager/fishing-condition", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResResultDto postWrite(@LoginUser UserInfo userInfo,
                                   @ApiParam(value = "조황 정보 등록 dto", required = true) @RequestPart(value="keys") FishingConditionDto fishingConditionDto,
-                                  @ApiParam(value = "조황 정보에 등록 할 사진 목록", required = true)  @RequestPart(value = "images", required = false) List<MultipartFile> files) {
+                                  @ApiParam(value = "조황 정보에 등록 할 사진 목록", required = false)  @RequestPart(value = "images", required = false) List<MultipartFile> files) {
 
-
-        if(s3FileUploadService.uploadFishingConditionFile(files).isEmpty()){
-            return new ResResultDto(-1L,"png,jpg,jpeg 확장자만 저장 가능합니다.");
-        }
-
-        return fishingConditionService.upload(userInfo,fishingConditionDto, s3FileUploadService.uploadFishingConditionFile(files));
+        return fishingConditionService.upload(userInfo,fishingConditionDto, files);
     }
     
     //조황 정보 목록 조회
-    @GetMapping("/fishing-condition/{fish}/{date}/{sortBy}/{sortMethod}/{page}")
-    public List<ResFishingConditionListDto> list(@ApiParam(value = "어종 이름", required = true)  @PathVariable String fish,
-                                                 @ApiParam(value = "yyyy-mm-dd 형식 날짜", required = true)  @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate date,
+    @GetMapping("/fishing-condition/{sortBy}/{sortMethod}/{page}")
+    public List<ResFishingConditionListDto> list(@ApiParam(value = "어종 이름", required = true)  @RequestParam String fish,
+                                                 @ApiParam(value = "yyyy-mm-dd 형식 날짜", required = true)  @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam LocalDate startDate,
+                                                 @ApiParam(value = "yyyy-mm-dd 형식 날짜", required = true)  @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam LocalDate endDate,
                                                  @ApiParam(value = "id,title,fish", required = true) @PathVariable String sortBy,
                                                  @ApiParam(value = "asc / desc", required = true) @PathVariable String sortMethod ,
                                                  @ApiParam(value = "page 정보", required = true) @PathVariable int page,
                                                  @ApiParam(value = "조황 정보 제목", required = true) @RequestParam  String title){
-        return fishingConditionService.list(fish,date,title,sortBy,sortMethod,page);
+
+
+        return fishingConditionService.list(fish,startDate, endDate, title,sortBy,sortMethod,page);
     }
 
     @GetMapping("fishing-condition/{id}")
