@@ -8,10 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api(tags = {"FishingInfo - api - 매니저만 사용 가능 (등록, 수정, 삭제)"})
 @RestController
@@ -31,6 +28,13 @@ public class FishingInfoController {
     }
 
     /* 출조 정보 수정 */
+    @PostMapping("/update")
+    public ResResultDto fishingInfoUpdate(@LoginUser UserInfo userInfo,
+                                          @ApiParam(value = "출조 정보 아이디", required = true) @RequestParam Long fishingInfo_id,
+                                          @ApiParam(value = "출조 정보를 갖는 객체", required = true) @RequestBody ReqFishingInfoDto reqFishingInfoDto) {
+
+        return fishingInfoService.fishingInfoUpdate(userInfo, reqFishingInfoDto, fishingInfo_id);
+    }
 
     /* 출조 정보 삭제 */
 }

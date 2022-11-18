@@ -41,6 +41,27 @@ public class FishingInfoImpl implements FishingInfoService {
         ShipInfo checkShipInfo = shipRepository.findByUserInfo(checkUserInfo)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("선박 정보를 찾을 수 없습니다."));
 
+        List<FishingInfo> fishingInfoList = fishingInfoRepository.findByShipInfo(checkShipInfo);
+
+        LocalDate currentDate = LocalDate.now();
+        LocalDate startDate = null;
+
+        for (FishingInfo fishingInfo : fishingInfoList) {
+
+            startDate = fishingInfo.getInfoStartDate();
+        }
+
+        /* 등록 날짜에 이미 등록된 출조 정보가 있거나 금일 이전의 날짜인 경우 등록 불가 */
+        if (fishingInfoList.isEmpty() && reqFishingInfoDto.getInfoStartDate().isBefore(currentDate)) {
+
+            return new ResResultDto(-1L, "금일을 포함한 이후 날짜로만 등록 가능 합니다.");
+
+        } else if (startDate != null && startDate.compareTo(reqFishingInfoDto.getInfoStartDate()) == 0) {
+
+            return new ResResultDto(-2L, "해당 날짜에 이미 등록된 출조 정보가 있습니다.");
+        }
+
+
         FishingInfo fishingInfo = fishingInfoRepository.save(
                 FishingInfo.builder()
                         .infoNotice(reqFishingInfoDto.getInfoNotice())
@@ -180,4 +201,70 @@ public class FishingInfoImpl implements FishingInfoService {
 
         return fishingInfoListDto;
     }
+
+    /* 출조 정보 수정 */
+    @Override
+    public ResResultDto fishingInfoUpdate(UserInfo userInfo, ReqFishingInfoDto reqFishingInfoDto, Long fishingInfo_id) {
+
+        UserInfo checkUserInfo = userRepository.findByIdAndRole(userInfo.getId(), UserRole.ROLE_MANAGER)
+                .orElseThrow(() -> new CustomException.ResourceNotFoundException("매니저 사용자가 아닙니다."));
+
+        ShipInfo checkShipInfo = shipRepository.findByUserInfo(checkUserInfo)
+                .orElseThrow(() -> new CustomException.ResourceNotFoundException("선박 정보를 찾을 수 없습니다."));
+
+        FishingInfo checkFishingInfo = fishingInfoRepository.findByShipInfoAndInfoId(checkShipInfo, fishingInfo_id)
+                .orElseThrow(() -> new CustomException.ResourceNotFoundException("출조 정보를 찾을 수 없습니다."));
+
+        List<FishingInfo> fishingInfoList = fishingInfoRepository.findByShipInfo(checkShipInfo);
+
+        /* 수정 시 수용 인원 0명인데 예약 가능으로 값이 들어온 경우 -> 반대의 경우 처리 */
+        if (reqFishingInfoDto.getInfoCapacity() == 0 && reqFishingInfoDto.getInfoReservationStatus().equals("예약가능")) {
+
+            return new ResResultDto(-1L, "인원이 0명인 경우 예약 마감으로 변경해야 합니다. 다시 시도해 주세요");
+
+        } else if (reqFishingInfoDto.getInfoCapacity() > 0 && reqFishingInfoDto.getInfoReservationStatus().equals("예약마감")) {
+
+            return new ResResultDto(-2L, "인원이 1명 이상인 경우 예약 가능으로 변경해야 합니다. 다시 시도해 주세요");
+        }
+
+
+        /* 수정 하려는 날짜에 이미 등록된 출조 정보가 있거나 금일 이전의 날짜인 경우 */
+        for (FishingInfo fishingInfo : fishingInfoList) {
+
+            LocalDate currentDate = LocalDate.now();
+
+
+            /* 리스트 값을 하나씩 순회 하면서 값 비교 */
+            /* 수정하려는 날짜는 빼고 나머지 날짜와 같은 경우에만  */
+            if (fishingInfo.getInfoStartDate().isEqual(checkFishingInfo.getInfoStartDate())) {
+
+                return new ResResultDto(-3L, "해당 날짜에 이미 등록된 출조 정보가 있습니다.");
+
+            } else if (reqFishingInfoDto.getInfoStartDate().compareTo(currentDate) < 0) {
+
+                return new ResResultDto(-4L, "금일 이전 날짜로는 수정할 수 없습니다.");
+            }
+        }
+
+        /* 집결지 출항지는 프론트에서 값 전달해준다 하면 dto 수정 */
+        checkFishingInfo = fishingInfoRepository.save(
+                FishingInfo.builder()
+                        .infoId(checkFishingInfo.getInfoId())
+                        .infoNotice(reqFishingInfoDto.getInfoNotice())
+                        .infoMessage(reqFishingInfoDto.getInfoMessage())
+                        .infoTarget(reqFishingInfoDto.getInfoTarget())
+                        .infoAssemblePoint(checkShipInfo.getStreetAddress())
+                        .infoStartPoint(checkShipInfo.getStreetAddress())
+                        .infoCapacity(reqFishingInfoDto.getInfoCapacity())
+                        .infoStartTime(reqFishingInfoDto.getInfoStartTime())
+                        .infoEndTime(reqFishingInfoDto.getInfoEndTime())
+                        .infoStartDate(reqFishingInfoDto.getInfoStartDate())
+                        .infoReservationStatus(reqFishingInfoDto.getInfoReservationStatus())
+                        .shipInfo(checkShipInfo)
+                        .build()
+        );
+
+        return new ResResultDto(checkFishingInfo.getInfoId(), "출조 정보를 수정 했습니다.");
+    }
+
 }

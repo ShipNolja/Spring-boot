@@ -19,4 +19,7 @@ public interface FishingInfoService {
 
     /* 출조 정보 상세 목록 */
     List<ResFishingInfoListDto> detailsInfoList(int page, Long ship_id);
+
+    /* 출조 정보 수정 */
+    ResResultDto fishingInfoUpdate(UserInfo userInfo, ReqFishingInfoDto reqFishingInfoDto, Long fishingInfo_id);
 }
