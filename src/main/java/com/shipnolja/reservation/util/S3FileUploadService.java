@@ -9,6 +9,8 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
+import com.shipnolja.reservation.fishingCondition.dto.response.ResFileDto;
+import com.shipnolja.reservation.util.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.activation.MimetypesFileTypeMap;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -55,12 +53,42 @@ public class S3FileUploadService {
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(file.getSize());
 
-
             if (fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".jpeg")){
                 //파일 확장자에서 contentType 추출
                 mimeTypesMap.getContentType(fileName);
                 objectMetadata.setContentType(mimeTypesMap.getContentType(fileName));
-            }else return;
+
+                try(InputStream inputStream = file.getInputStream()) {
+                    amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+                            .withCannedAcl(CannedAccessControlList.PublicRead));
+                } catch(IOException e) {
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+                }
+
+                filePathList.add(defaultUrl +"/"+ fileName);
+            }
+            else return;
+        });
+
+        return filePathList;
+    }
+
+
+
+    //조황 정보 사진 저장
+    public List<ResFileDto> uploadFishingConditionFile(List<MultipartFile> multipartFile) {
+        MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
+        List<ResFileDto> resFileList = new ArrayList<>();
+
+        // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
+        multipartFile.forEach(file -> {
+            String fileName = createFileName(file.getOriginalFilename());
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(file.getSize());
+
+            mimeTypesMap.getContentType(fileName);
+            objectMetadata.setContentType(mimeTypesMap.getContentType(fileName));
+
 
 
             try(InputStream inputStream = file.getInputStream()) {
@@ -70,10 +98,14 @@ public class S3FileUploadService {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
             }
 
-            filePathList.add(defaultUrl +"/"+ fileName);
+            ResFileDto resFileDto = new ResFileDto();
+            resFileDto.setFilePath(defaultUrl +"/"+ fileName);
+            resFileDto.setOrigin(file.getOriginalFilename());
+            resFileDto.setSaveName(fileName);
+            resFileList.add(resFileDto);
         });
+        return resFileList;
 
-        return filePathList;
     }
 
     public void deleteFile(String fileName) {

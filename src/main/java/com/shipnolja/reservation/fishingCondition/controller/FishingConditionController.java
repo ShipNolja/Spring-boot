@@ -6,6 +6,7 @@ import com.shipnolja.reservation.fishingCondition.dto.response.ResFishingConditi
 import com.shipnolja.reservation.fishingCondition.service.FishingConditionService;
 import com.shipnolja.reservation.user.annotation.LoginUser;
 import com.shipnolja.reservation.user.model.UserInfo;
+import com.shipnolja.reservation.util.S3FileUploadService;
 import com.shipnolja.reservation.util.responseDto.ResResultDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
@@ -25,13 +26,19 @@ import java.util.List;
 @Api(tags = {"FishingCondition - 조황 정보 관련 기능 - 조회는 모든사용자 , 등록은 Manager"})
 public class FishingConditionController {
     private final FishingConditionService fishingConditionService;
+    private final S3FileUploadService s3FileUploadService;
     //조황 정보 작성
     @PostMapping(value = "/manager/fishing-condition", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResResultDto postWrite(@LoginUser UserInfo userInfo,
                                   @ApiParam(value = "조황 정보 등록 dto", required = true) @RequestPart(value="keys") FishingConditionDto fishingConditionDto,
                                   @ApiParam(value = "조황 정보에 등록 할 사진 목록", required = true)  @RequestPart(value = "images", required = false) List<MultipartFile> files) {
 
-        return fishingConditionService.upload(userInfo,fishingConditionDto, files);
+
+        if(s3FileUploadService.uploadFishingConditionFile(files).isEmpty()){
+            return new ResResultDto(-1L,"png,jpg,jpeg 확장자만 저장 가능합니다.");
+        }
+
+        return fishingConditionService.upload(userInfo,fishingConditionDto, s3FileUploadService.uploadFishingConditionFile(files));
     }
     
     //조황 정보 목록 조회

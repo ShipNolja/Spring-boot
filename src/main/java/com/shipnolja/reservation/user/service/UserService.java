@@ -7,6 +7,8 @@ import com.shipnolja.reservation.user.model.UserInfo;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface UserService extends UserDetailsService {
     //회원가입
     Long join(UserInfoDto userInfoDto);
@@ -21,6 +23,6 @@ public interface UserService extends UserDetailsService {
     UserInfo userInfoCheck(UserInfo userInfo);
 
     //사업자 등록
-    Long shipRegistration(UserInfo userInfo, ShipInfoDto shipInfoDto, String filePath);
+    Long shipRegistration(UserInfo userInfo, ShipInfoDto shipInfoDto, List<MultipartFile> files);
 
 }
