@@ -25,8 +25,8 @@ public interface FishingInfoRepository extends JpaRepository<FishingInfo, Long> 
 
     /* 예약 취소 시 수용 인원 증가 */
     @Transactional
-    @Modifying
-    @Query("update FishingInfo fi set fi.infoCapacity = fi.infoCapacity - :reservationNum where fi.infoId = :infoId")
+    @Modifying(clearAutomatically = true)
+    @Query("update FishingInfo fi set fi.infoCapacity = fi.infoCapacity + :reservationNum where fi.infoId = :infoId")
     void updateReserveCancel(@Param("reservationNum") int reservationNum,
                              @Param("infoId") Long info_id);
 
@@ -36,7 +36,7 @@ public interface FishingInfoRepository extends JpaRepository<FishingInfo, Long> 
     @Transactional
     @Modifying
     @Query("update FishingInfo fi set fi.infoReservationStatus = :reservationStatus where fi.infoId = :infoId")
-    void updateStatusOff(@Param("reservationStatus") String reservationStatus,
+    void updateInfoStatus(@Param("reservationStatus") String reservationStatus,
                          @Param("infoId") Long info_id);
 
 
@@ -58,15 +58,19 @@ public interface FishingInfoRepository extends JpaRepository<FishingInfo, Long> 
 
     /* 선박명 */
     Page<FishingInfo> findByShipInfo_NameContaining(String content, Pageable pageable);
+
+    /* 어종 */
+    Page<FishingInfo> findByInfoTargetContaining(String target, Pageable pageable);
     
     /* 출조 날짜 */
     Page<FishingInfo> findByInfoStartDate(LocalDate startDate, Pageable pageable);
-    
+
+
+
     /* 사업자 마이페이지 */
     List<FishingInfo> findByShipInfo(ShipInfo shipInfo);
 
     Optional<FishingInfo> findByShipInfoAndInfoId(ShipInfo shipInfo, Long fishingInfo_id);
     Page<FishingInfo> findByShipInfoAndInfoStartDate(ShipInfo shipInfo, LocalDate startDate, Pageable pageable);
     Page<FishingInfo> findByShipInfoAndInfoReservationStatusContaining(ShipInfo shipInfo, String content, Pageable pageable);
-
 }

@@ -1,6 +1,5 @@
 package com.shipnolja.reservation.fishinginfo.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +8,6 @@ import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @NoArgsConstructor
@@ -54,19 +52,17 @@ public class ReqFishingInfoDto {
     private int infoCapacity;
 
     /* 출항일시 */
-    @ApiModelProperty(value = "출항 일시", example = "xxxx(년)/xx(월)/xx(일)", required = true)
+    @ApiModelProperty(value = "출항 일시", example = "xxxx(년)-xx(월)-xx(일)", required = true)
     @NotBlank(message = "출항 일자는 필수 입력입니다.")
     private LocalDate infoStartDate;
 
     /* 출항시간 */
     @ApiModelProperty(value = "출항시간", example = "xx(시):xx(분):xx(초)", required = true)
-    @JsonFormat(pattern = "HH:mm:ss", timezone = "Asia/Seoul")
     @NotBlank(message = "출항 시간은 필수 입력입니다.")
     private LocalTime infoStartTime;
 
     /* 입항 시간 */
     @ApiModelProperty(value = "입항 시간", example = "xx(시):xx(분):xx(초)", required = true)
-    @JsonFormat(pattern = "HH:mm:ss", timezone = "Asia/Seoul")
     @NotBlank(message = "입항 시간은 필수 입력입니다.")
     private LocalTime infoEndTime;
 }

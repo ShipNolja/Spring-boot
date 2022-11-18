@@ -34,7 +34,7 @@ public class ReservationImpl implements ReservationService {
     /* 예약 등록 */
     @Override
     public ResResultDto fishingReserve(UserInfo userInfo, ReqFishingReserveDto reqFishingReserveDto, Long ship_id, Long info_id) {
-        
+
         UserInfo checkUserInfo = userRepository.findById(userInfo.getId())
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("회원 정보를 찾을 수 없습니다."));
 
@@ -68,18 +68,17 @@ public class ReservationImpl implements ReservationService {
                         .build()
         );
 
-        /* 출조 정보 수용인원을 예약 인원 만큼 - 
-        *  1차 캐시 최신화 */
-        fishingInfoRepository.updateReserveRegistration(reqFishingReserveDto.getReservationNum(),checkFishingInfo.getInfoId());
+        /* 출조 정보 수용인원을 예약 인원 만큼 -
+         *  1차 캐시 최신화 */
+        fishingInfoRepository.updateReserveRegistration(reqFishingReserveDto.getReservationNum(), checkFishingInfo.getInfoId());
 
         /* 다시 재 조회 해서 수용인원 0명이면 예약 마감으로 상태 변경 */
         FishingInfo newFishingInfo = fishingInfoRepository.findById(info_id)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("출조 정보를 찾을 수 없습니다."));
 
+        if (newFishingInfo.getInfoCapacity() == 0) {
 
-        if(newFishingInfo.getInfoCapacity() == 0) {
-
-            fishingInfoRepository.updateStatusOff("예약마감", newFishingInfo.getInfoId());
+            fishingInfoRepository.updateInfoStatus("예약마감", newFishingInfo.getInfoId());
         }
 
         return new ResResultDto(reservation.getReservationId(), "예약을 등록 했습니다.");

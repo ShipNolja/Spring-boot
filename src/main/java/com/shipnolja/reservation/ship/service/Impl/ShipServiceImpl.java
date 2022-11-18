@@ -278,12 +278,9 @@ public class ShipServiceImpl implements ShipService {
         Reservation checkReservation = reservationRepository.findByFishingInfoAndReservationId(checkFishingInfo, reservation_id)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("예약 정보를 찾을 수 없습니다."));
 
-        if(checkReservation.getReservationStatus().equals("예약대기") && status.equals("예약완료")) {
-            /* 예약완료 상태로 변경 */
-            reservationRepository.statusUpdate(status, reservation_id);
-        } else if(checkReservation.getReservationStatus().equals("예약완료") && status.equals("방문완료")) {
-            /* 방문완료 상태로 변경 */
-            reservationRepository.statusUpdate(status, reservation_id);
+        if(checkReservation.getReservationStatus().equals("예약완료") && status.equals("방문완료")) {
+            /* 방문완료로 상태 변경 */
+            reservationRepository.statusUpdate(status, checkReservation.getReservationId());
         } else {
             return new ResResultDto(-1L,"변경할 수 없는 상태입니다.");
         }

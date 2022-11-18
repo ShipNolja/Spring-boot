@@ -13,13 +13,18 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
     Optional<Reservation> findByReservationDate(LocalDate startDate);
 
+    List<Reservation> findByFishingInfo(FishingInfo fishingInfo);
+
     /* 회원 마이페이지 */
+
+    Optional<Reservation> findByUserInfoAndReservationId(UserInfo userInfo, Long reservation_id);
     
     /* 회원 예약상태에 따른 목록 */
     Page<Reservation> findByUserInfoAndReservationStatusContaining(UserInfo userInfo, String content, Pageable pageable);
