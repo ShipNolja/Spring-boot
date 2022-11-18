@@ -4,13 +4,14 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Getter
 @Setter
-public class ResFishingInfoDto {
+public class ResFishingInfoListDto {
 
     private Long Id;
 
@@ -26,9 +27,9 @@ public class ResFishingInfoDto {
 
     private LocalDate infoStartDate;
 
-    private LocalDateTime startTime;
+    private LocalTime startTime;
 
-    private LocalDateTime EndTime;
+    private LocalTime EndTime;
 
     private String infoReservationStatus;
 

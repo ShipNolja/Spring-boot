@@ -6,6 +6,7 @@ import com.shipnolja.reservation.user.annotation.LoginUser;
 import com.shipnolja.reservation.user.model.UserInfo;
 import com.shipnolja.reservation.util.responseDto.ResResultDto;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
+    @ApiOperation(value = "후기 작성",notes = "예약에 대한 후기를 작성합니다.")
     @PostMapping("")
     public ResResultDto reviewWrite(@LoginUser UserInfo userInfo,
                                     @ApiParam(value = "예약 아이디", required = true) @RequestParam Long reservationId,

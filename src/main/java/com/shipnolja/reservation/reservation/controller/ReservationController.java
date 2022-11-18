@@ -6,6 +6,7 @@ import com.shipnolja.reservation.user.annotation.LoginUser;
 import com.shipnolja.reservation.user.model.UserInfo;
 import com.shipnolja.reservation.util.responseDto.ResResultDto;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     /* 예약 등록 */
+    @ApiOperation(value = "예약 등록",notes = "출조 예약을 등록합니다.")
     @PostMapping("")
     public ResResultDto fishingReserve(@LoginUser UserInfo userInfo,
                                        @ApiParam(value = "예약 정보를 갖는 객체", required = true) @RequestBody ReqFishingReserveDto reqFishingReserveDto,
