@@ -86,7 +86,7 @@ public class FishingInfoImpl implements FishingInfoService {
     public List<ResFishingInfoListDto> simpleInfoList(int page, String sortMethod, String sortBy, String searchBy,
                                                       String content, String target, LocalDate infoStartDate) {
         Pageable pageable = null;
-        Page<FishingInfo> fishingInfoPage = null;
+        Page<FishingInfo> fishingInfoPage;
 
         if (sortMethod.equals("asc")) {
             pageable = PageRequest.of(page, 10, Sort.by(sortBy).ascending());
@@ -94,10 +94,12 @@ public class FishingInfoImpl implements FishingInfoService {
             pageable = PageRequest.of(page, 10, Sort.by(sortBy).descending());
         }
 
-        if (target != null) {
-            /* 어종 값이 있는 경우 */
-            fishingInfoPage = fishingInfoRepository.findByInfoTargetContaining(target, pageable);
+        if(target.equals("전체") && pageable != null) {
+            fishingInfoPage = fishingInfoRepository.findAll(pageable);
         } else {
+            fishingInfoPage = fishingInfoRepository.findByInfoTargetContaining(target, pageable);
+        }
+
             switch (searchBy) {
                 case "지역":
                     fishingInfoPage = fishingInfoRepository.findByShipInfo_AreaContaining(content, pageable);
@@ -123,7 +125,7 @@ public class FishingInfoImpl implements FishingInfoService {
                     }
                     break;
             }
-        }
+        
 
         List<ResFishingInfoListDto> fishingInfoListDto = new ArrayList<>();
 
@@ -242,7 +244,6 @@ public class FishingInfoImpl implements FishingInfoService {
         for (FishingInfo fishingInfo : fishingInfoList) {
 
             LocalDate currentDate = LocalDate.now();
-
 
             /* 리스트 값을 하나씩 순회 하면서 값 비교 */
             /* 수정하려는 날짜는 빼고 나머지 날짜와 같은 경우에만  */

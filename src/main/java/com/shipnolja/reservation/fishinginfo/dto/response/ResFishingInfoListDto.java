@@ -31,10 +31,6 @@ public class ResFishingInfoListDto {
 
     private LocalDate infoStartDate;
 
-    private LocalTime startTime;
-
-    private LocalTime EndTime;
-
     private String infoReservationStatus;
 
     private int infoCapacity;
