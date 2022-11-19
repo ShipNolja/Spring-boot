@@ -47,13 +47,13 @@ public class ReservationImpl implements ReservationService {
         /* 같은 날짜에 중복 예약 못하고, 예약마감 상태인 경우 예약 불가 */
         if(reservationRepository.findByReservationDate(checkFishingInfo.getInfoStartDate()).isPresent()) {
 
-            return new ResResultDto(-1L,"해당 날짜에 이미 예약이 있습니다 취소 후 예약 해주세요"); //완
+            return new ResResultDto(-1L,"해당 날짜에 이미 예약이 있습니다 취소 후 예약 해주세요");
         } else if(checkFishingInfo.getInfoReservationStatus().equals("예약마감")) {
 
-            return new ResResultDto(-2L,"예약이 마감 되었습니다 다른 날짜에 이용해주세요"); //완
+            return new ResResultDto(-2L,"예약이 마감 되었습니다 다른 날짜에 이용해주세요");
         } else if(checkFishingInfo.getInfoCapacity() < reqFishingReserveDto.getReservationNum()) {
 
-            return new ResResultDto(-3L,"남은 예약 인원보다 많은 인원은 예약이 불가능 합니다 인원 수를 확인 해주세요"); //완
+            return new ResResultDto(-3L,"남은 예약 인원보다 많은 인원은 예약이 불가능 합니다 인원 수를 확인 해주세요");
         }
 
         Reservation reservation = reservationRepository.save(
