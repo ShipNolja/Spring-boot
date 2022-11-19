@@ -171,18 +171,23 @@ public class ShipServiceImpl implements ShipService {
 
                 ResFishingInfoListDto resFishingInfoListDto = new ResFishingInfoListDto();
 
-                resFishingInfoListDto.setId(fishingInfo.getInfoId());
+                resFishingInfoListDto.setFishingInfoId(fishingInfo.getInfoId());
+                resFishingInfoListDto.setShipInfoId(checkShipInfo.getId());
                 resFishingInfoListDto.setArea(fishingInfo.getShipInfo().getArea());
                 resFishingInfoListDto.setDetailArea(fishingInfo.getShipInfo().getDetailArea());
                 resFishingInfoListDto.setPort(fishingInfo.getShipInfo().getPort());
                 resFishingInfoListDto.setShipName(fishingInfo.getShipInfo().getName());
                 resFishingInfoListDto.setTarget(fishingInfo.getInfoTarget());
                 resFishingInfoListDto.setInfoStartDate(fishingInfo.getInfoStartDate());
-                resFishingInfoListDto.setStartTime(fishingInfo.getInfoStartTime());
-                resFishingInfoListDto.setEndTime(fishingInfo.getInfoEndTime());
+                resFishingInfoListDto.setInfoStartTime(fishingInfo.getInfoStartTime());
+                resFishingInfoListDto.setInfoEndTime(fishingInfo.getInfoEndTime());
                 resFishingInfoListDto.setInfoReservationStatus(fishingInfo.getInfoReservationStatus());
                 resFishingInfoListDto.setInfoCapacity(fishingInfo.getInfoCapacity());
                 resFishingInfoListDto.setImage(fishingInfo.getShipInfo().getImage());
+                resFishingInfoListDto.setInfoMessage(fishingInfo.getInfoMessage());
+                resFishingInfoListDto.setInfoNotice(fishingInfo.getInfoNotice());
+                resFishingInfoListDto.setInfoAssemblePoint(fishingInfo.getInfoAssemblePoint());
+                resFishingInfoListDto.setInfoStartPoint(fishingInfo.getInfoStartPoint());
                 resFishingInfoListDto.setTotalPage(totalPages);
                 resFishingInfoListDto.setTotalElement(totalElements);
 
@@ -229,9 +234,11 @@ public class ShipServiceImpl implements ShipService {
                     break;
                 case "예약상태" :
                     reservationPage = reservationRepository.findByFishingInfoAndReservationStatus(fishingInfo, content, pageable);
+                    break;
                 case "전체" :
                     /* 선박이 올린 출조 정보 순회하면서 등록한 모든 출조 정보의 예약자 출력 */
                     reservationPage = reservationRepository.findByFishingInfo(fishingInfo, pageable);
+                    break;
             }
 
             if(reservationPage != null) {
