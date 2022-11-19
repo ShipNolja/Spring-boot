@@ -2,7 +2,6 @@ package com.shipnolja.reservation.reservation.repository;
 
 import com.shipnolja.reservation.fishinginfo.model.FishingInfo;
 import com.shipnolja.reservation.reservation.model.Reservation;
-import com.shipnolja.reservation.ship.model.ShipInfo;
 import com.shipnolja.reservation.user.model.UserInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -14,7 +14,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class ReqFishingReserveDto {
 
-    @ApiModelProperty(value = "예약자 전화번호", example = "010-xxxx-xxxx", required = true)
+    @ApiModelProperty(value = "예약자 전화번호", example = "010xxxxxxxx", required = true)
     @NotBlank(message = "전화번호는 필수 입력입니다.")
     private String reservationPhone;
 

@@ -1,5 +1,6 @@
 package com.shipnolja.reservation.user.controller;
 
+import com.shipnolja.reservation.reservation.dto.response.ResReservationListDto;
 import com.shipnolja.reservation.ship.dto.request.ShipInfoDto;
 import com.shipnolja.reservation.user.annotation.LoginUser;
 import com.shipnolja.reservation.user.dto.response.ResUserInfoDto;
@@ -55,4 +56,27 @@ public class UserController {
         return new ResResultDto(result,"선박 등록을 성공했습니다.");
 
     }
+
+    /* 회원 예약 목록 조회 */
+    @ApiOperation(value = "회원 예약 목록 조회",notes = "회원이 예약한 목록을 조회합니다.")
+    @GetMapping("/reservationList")
+    public List<ResReservationListDto> userReservationList(@LoginUser UserInfo userInfo,
+                                                           @ApiParam(value = "정렬 방법 : asc , desc", required = true) @RequestParam String sortMethod,
+                                                           @ApiParam(value = "검색 기준 : 예약상태, 예약날짜", required = true) @RequestParam String searchBy,
+                                                           @ApiParam(value = "검색값 : 예약완료, 예약취소, 방문완료, xxxx(년)-xx(월)-xx(일)", required = true) @RequestParam String content,
+                                                           int page) {
+
+        return userService.userReservationList(userInfo, page, sortMethod, searchBy, content);
+    }
+
+    /* 회원 예약 상태 변경 */
+    @ApiOperation(value = "회원 예약 취소",notes = "회원이 예약한 출조 정보를 취소합니다.")
+    @DeleteMapping("/statusUpdate")
+    public ResResultDto userStatusUpdate(@LoginUser UserInfo userInfo,
+                                         @ApiParam(value = "예약 아이디", required = true) @RequestParam Long reservation_id,
+                                         @ApiParam(value = "상태 변경 값", required = true) @RequestParam String status) {
+
+        return userService.userStatusUpdate(userInfo, reservation_id, status);
+    }
+
 }
