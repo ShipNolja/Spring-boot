@@ -13,7 +13,9 @@ import java.time.LocalTime;
 @Setter
 public class ResFishingInfoListDto {
 
-    private Long Id;
+    private Long fishingInfoId;
+
+    private Long shipInfoId;
 
     private String area;
 
@@ -22,6 +24,8 @@ public class ResFishingInfoListDto {
     private String port;
 
     private String shipName;
+
+    private String Image;
 
     private String target;
 
@@ -35,7 +39,17 @@ public class ResFishingInfoListDto {
 
     private int infoCapacity;
 
-    private String Image;
+    private LocalTime infoStartTime;
+
+    private LocalTime infoEndTime;
+
+    private String infoNotice;
+
+    private String infoMessage;
+
+    private String infoAssemblePoint;
+
+    private String infoStartPoint;
 
     private int totalPage;
 

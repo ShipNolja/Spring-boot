@@ -136,18 +136,23 @@ public class FishingInfoImpl implements FishingInfoService {
 
                 ResFishingInfoListDto infoListDto = new ResFishingInfoListDto();
 
-                infoListDto.setId(fishingInfo.getInfoId());
+                infoListDto.setFishingInfoId(fishingInfo.getInfoId());
+                infoListDto.setShipInfoId(fishingInfo.getShipInfo().getId());
                 infoListDto.setArea(fishingInfo.getShipInfo().getArea());
                 infoListDto.setDetailArea(fishingInfo.getShipInfo().getDetailArea());
                 infoListDto.setPort(fishingInfo.getShipInfo().getPort());
                 infoListDto.setShipName(fishingInfo.getShipInfo().getName());
                 infoListDto.setTarget(fishingInfo.getInfoTarget());
                 infoListDto.setInfoStartDate(fishingInfo.getInfoStartDate());
-                infoListDto.setStartTime(fishingInfo.getInfoStartTime());
-                infoListDto.setEndTime(fishingInfo.getInfoEndTime());
+                infoListDto.setInfoStartTime(fishingInfo.getInfoStartTime());
+                infoListDto.setInfoEndTime(fishingInfo.getInfoEndTime());
                 infoListDto.setInfoReservationStatus(fishingInfo.getInfoReservationStatus());
                 infoListDto.setInfoCapacity(fishingInfo.getInfoCapacity());
                 infoListDto.setImage(fishingInfo.getShipInfo().getImage());
+                infoListDto.setInfoMessage(fishingInfo.getInfoMessage());
+                infoListDto.setInfoNotice(fishingInfo.getInfoNotice());
+                infoListDto.setInfoAssemblePoint(fishingInfo.getInfoAssemblePoint());
+                infoListDto.setInfoStartPoint(fishingInfo.getInfoStartPoint());
                 infoListDto.setTotalPage(totalPages);
                 infoListDto.setTotalElement(totalElements);
 
@@ -180,17 +185,22 @@ public class FishingInfoImpl implements FishingInfoService {
 
                 ResFishingInfoListDto infoListDto = new ResFishingInfoListDto();
 
-                infoListDto.setId(fishingInfo.getInfoId());
+                infoListDto.setFishingInfoId(fishingInfo.getInfoId());
+                infoListDto.setShipInfoId(checkShipInfo.getId());
                 infoListDto.setArea(fishingInfo.getShipInfo().getArea());
                 infoListDto.setDetailArea(fishingInfo.getShipInfo().getDetailArea());
                 infoListDto.setPort(fishingInfo.getShipInfo().getPort());
                 infoListDto.setShipName(fishingInfo.getShipInfo().getName());
                 infoListDto.setTarget(fishingInfo.getInfoTarget());
                 infoListDto.setInfoStartDate(fishingInfo.getInfoStartDate());
-                infoListDto.setStartTime(fishingInfo.getInfoStartTime());
-                infoListDto.setEndTime(fishingInfo.getInfoEndTime());
+                infoListDto.setInfoStartTime(fishingInfo.getInfoStartTime());
+                infoListDto.setInfoEndTime(fishingInfo.getInfoEndTime());
                 infoListDto.setInfoReservationStatus(fishingInfo.getInfoReservationStatus());
                 infoListDto.setInfoCapacity(fishingInfo.getInfoCapacity());
+                infoListDto.setInfoMessage(fishingInfo.getInfoMessage());
+                infoListDto.setInfoNotice(fishingInfo.getInfoNotice());
+                infoListDto.setInfoAssemblePoint(fishingInfo.getInfoAssemblePoint());
+                infoListDto.setInfoStartPoint(fishingInfo.getInfoStartPoint());
                 infoListDto.setTotalPage(fishingInfoPage.getTotalPages());
                 infoListDto.setTotalElement(fishingInfoPage.getTotalElements());
 
