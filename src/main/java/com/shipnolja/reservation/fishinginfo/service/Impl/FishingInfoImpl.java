@@ -284,17 +284,36 @@ public class FishingInfoImpl implements FishingInfoService {
 
         return new ResResultDto(checkFishingInfo.getInfoId(), "출조 정보를 수정 했습니다.");
     }
-
+    
+    /* 출조 정보 삭제 */
     @Override
-    public ResFishingInfoListDto reservationPage(Long info_id) {
+    public ResResultDto fishingInfoDelete(UserInfo userInfo, Long fishingInfo_id) {
 
-        FishingInfo checkFishingInfo = fishingInfoRepository.findById(info_id)
+        UserInfo checkUserInfo = userRepository.findByIdAndRole(userInfo.getId(), UserRole.ROLE_MANAGER)
+                .orElseThrow(() -> new CustomException.ResourceNotFoundException("매니저 사용자가 아닙니다."));
+
+        ShipInfo checkShipInfo = shipRepository.findByUserInfo(checkUserInfo)
+                .orElseThrow(() -> new CustomException.ResourceNotFoundException("선박 정보를 찾을 수 없습니다."));
+
+        FishingInfo checkFishingInfo = fishingInfoRepository.findByShipInfoAndInfoId(checkShipInfo, fishingInfo_id)
+                .orElseThrow(() -> new CustomException.ResourceNotFoundException("출조 정보를 찾을 수 없습니다."));
+
+        fishingInfoRepository.deleteById(checkFishingInfo.getInfoId());
+
+        return new ResResultDto(checkFishingInfo.getInfoId(),"출조 정보를 삭제 했습니다.");
+    }
+
+    /* 출조 정보 예약 페이지 조회 */
+    @Override
+    public ResFishingInfoListDto reservationPage(Long fishingInfo_id) {
+
+        FishingInfo checkFishingInfo = fishingInfoRepository.findById(fishingInfo_id)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("출조 정보를 찾을 수 없습니다."));
 
         ShipInfo checkShipInfo = shipRepository.findById(checkFishingInfo.getShipInfo().getId())
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("선박 정보를 찾을 수 없습니다."));
 
-         ResFishingInfoListDto infoListDto = new ResFishingInfoListDto();
+        ResFishingInfoListDto infoListDto = new ResFishingInfoListDto();
 
         infoListDto.setFishingInfoId(checkFishingInfo.getInfoId());
         infoListDto.setShipInfoId(checkShipInfo.getId());

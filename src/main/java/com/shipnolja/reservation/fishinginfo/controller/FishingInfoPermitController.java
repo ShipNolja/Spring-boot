@@ -20,13 +20,6 @@ public class FishingInfoPermitController {
 
     private final FishingInfoService fishingInfoService;
 
-    /*
-        -검색-
-        sortMethod => 오름차순 내림차순
-        + 정렬기준은 내 테이블에 있는거를 기준으로 잡아야함
-        sortBy 정렬기준 => target(대상어종), startPoint(출항지), startDate(출항일자), reservationStatus(예약상태)
-    */
-
     /* 출조 정보 검색 */
     @ApiOperation(value = "출조 정보 검색", notes = "출조 정보 목록을 출력합니다.")
     @GetMapping("/simpleList")
@@ -49,13 +42,13 @@ public class FishingInfoPermitController {
 
         return fishingInfoService.detailsInfoList(page, ship_id);
     }
-    
+
     /* 출조 정보 예약 페이지 조회 */
     @ApiOperation(value = "출조 정보 예약 페이지 조회", notes = "해당 출조 정보의 예약 페이지 조회합니다.")
     @GetMapping("/reservationPage")
-    public ResFishingInfoListDto reservationPage(@ApiParam(value = "출조 정보 아이디",required = true) @RequestParam Long info_id) {
+    public ResFishingInfoListDto reservationPage(@ApiParam(value = "출조 정보 아이디",required = true) @RequestParam Long fishingInfo_id) {
 
-        return fishingInfoService.reservationPage(info_id);
+        return fishingInfoService.reservationPage(fishingInfo_id);
     }
 
 }

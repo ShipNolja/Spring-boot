@@ -28,6 +28,7 @@ public class FishingInfoController {
     }
 
     /* 출조 정보 수정 */
+    @ApiOperation(value = "출조 정보 수정", notes = "출조 정보를 수정 합니다.")
     @PostMapping("/update")
     public ResResultDto fishingInfoUpdate(@LoginUser UserInfo userInfo,
                                           @ApiParam(value = "출조 정보 아이디", required = true) @RequestParam Long fishingInfo_id,
@@ -37,4 +38,11 @@ public class FishingInfoController {
     }
 
     /* 출조 정보 삭제 */
+    @ApiOperation(value = "출조 정보 삭제", notes = "출조 정보를 삭제 합니다.")
+    @DeleteMapping("delete")
+    public ResResultDto fishingInfoDelete(@LoginUser UserInfo userInfo,
+                                          @RequestParam Long fishingInfo_id) {
+
+        return fishingInfoService.fishingInfoDelete(userInfo, fishingInfo_id);
+    }
 }
