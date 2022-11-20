@@ -49,5 +49,13 @@ public class FishingInfoPermitController {
 
         return fishingInfoService.detailsInfoList(page, ship_id);
     }
+    
+    /* 출조 정보 예약 페이지 조회 */
+    @ApiOperation(value = "출조 정보 예약 페이지 조회", notes = "해당 출조 정보의 예약 페이지 조회합니다.")
+    @GetMapping("/reservationPage")
+    public ResFishingInfoListDto reservationPage(@ApiParam(value = "출조 정보 아이디",required = true) @RequestParam Long info_id) {
+
+        return fishingInfoService.reservationPage(info_id);
+    }
 
 }

@@ -22,4 +22,6 @@ public interface FishingInfoService {
 
     /* 출조 정보 수정 */
     ResResultDto fishingInfoUpdate(UserInfo userInfo, ReqFishingInfoDto reqFishingInfoDto, Long fishingInfo_id);
+
+    ResFishingInfoListDto reservationPage(Long info_id);
 }

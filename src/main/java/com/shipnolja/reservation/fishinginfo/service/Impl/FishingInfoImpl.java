@@ -285,4 +285,36 @@ public class FishingInfoImpl implements FishingInfoService {
         return new ResResultDto(checkFishingInfo.getInfoId(), "출조 정보를 수정 했습니다.");
     }
 
+    @Override
+    public ResFishingInfoListDto reservationPage(Long info_id) {
+
+        FishingInfo checkFishingInfo = fishingInfoRepository.findById(info_id)
+                .orElseThrow(() -> new CustomException.ResourceNotFoundException("출조 정보를 찾을 수 없습니다."));
+
+        ShipInfo checkShipInfo = shipRepository.findById(checkFishingInfo.getShipInfo().getId())
+                .orElseThrow(() -> new CustomException.ResourceNotFoundException("선박 정보를 찾을 수 없습니다."));
+
+         ResFishingInfoListDto infoListDto = new ResFishingInfoListDto();
+
+        infoListDto.setFishingInfoId(checkFishingInfo.getInfoId());
+        infoListDto.setShipInfoId(checkShipInfo.getId());
+        infoListDto.setArea(checkShipInfo.getArea());
+        infoListDto.setDetailArea(checkShipInfo.getDetailArea());
+        infoListDto.setPort(checkShipInfo.getPort());
+        infoListDto.setShipName(checkShipInfo.getName());
+        infoListDto.setTarget(checkFishingInfo.getInfoTarget());
+        infoListDto.setInfoStartDate(checkFishingInfo.getInfoStartDate());
+        infoListDto.setInfoStartTime(checkFishingInfo.getInfoStartTime());
+        infoListDto.setInfoEndTime(checkFishingInfo.getInfoEndTime());
+        infoListDto.setInfoReservationStatus(checkFishingInfo.getInfoReservationStatus());
+        infoListDto.setInfoCapacity(checkFishingInfo.getInfoCapacity());
+        infoListDto.setInfoMessage(checkFishingInfo.getInfoMessage());
+        infoListDto.setInfoNotice(checkFishingInfo.getInfoNotice());
+        infoListDto.setInfoAssemblePoint(checkFishingInfo.getInfoAssemblePoint());
+        infoListDto.setInfoStartPoint(checkFishingInfo.getInfoStartPoint());
+        infoListDto.setImage(checkFishingInfo.getShipInfo().getImage());
+
+
+        return infoListDto;
+    }
 }
