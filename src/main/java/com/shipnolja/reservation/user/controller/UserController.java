@@ -6,6 +6,8 @@ import com.shipnolja.reservation.user.annotation.LoginUser;
 import com.shipnolja.reservation.user.dto.response.ResUserInfoDto;
 import com.shipnolja.reservation.user.model.UserInfo;
 import com.shipnolja.reservation.user.service.UserService;
+import com.shipnolja.reservation.util.S3FileUploadService;
+
 import com.shipnolja.reservation.util.responseDto.ResResultDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
 
 @Api(tags = {"User - ROLE_USER"})
 @RequiredArgsConstructor
@@ -40,9 +43,18 @@ public class UserController {
     @PostMapping(value = "",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResResultDto shipRegistration(@LoginUser UserInfo userInfo,
                                          @ApiParam(value = "선박 가입 정보 DTO", required = true) @RequestPart(value = "dto") ShipInfoDto shipInfoDto,
-                                         @ApiParam(value = "선박 이미지", required = true) @RequestPart(value = "image") MultipartFile file){
-        Long result = userService.shipRegistration(userInfo,shipInfoDto,file);
-        return new ResResultDto(result,"선박 등록을 성공했습니다");
+                                         @ApiParam(value = "선박 이미지", required = false) @RequestPart(value = "image") List<MultipartFile> files){
+
+        Long result = userService.shipRegistration(userInfo,shipInfoDto,files);
+        if (result==-1L){
+            return new ResResultDto(result,"파일이 없습니다.");
+        }
+        else if(result==-2L){
+            return new ResResultDto(result,"png,jpeg,jpg 확장자만 사용 가능합니다.");
+        }
+
+        return new ResResultDto(result,"선박 등록을 성공했습니다.");
+
     }
 
     /* 회원 예약 목록 조회 */
@@ -66,4 +78,5 @@ public class UserController {
 
         return userService.userStatusUpdate(userInfo, reservation_id, status);
     }
+
 }
