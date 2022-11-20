@@ -137,29 +137,10 @@ public class FishingInfoImpl implements FishingInfoService {
             LocalDate currentDate = LocalDate.now();
 
             fishingInfoPage.forEach(fishingInfo -> {
-                infoListDto.setFishingInfoId(fishingInfo.getInfoId());
-                infoListDto.setShipInfoId(fishingInfo.getShipInfo().getId());
-                infoListDto.setArea(fishingInfo.getShipInfo().getArea());
-                infoListDto.setDetailArea(fishingInfo.getShipInfo().getDetailArea());
-                infoListDto.setPort(fishingInfo.getShipInfo().getPort());
-                infoListDto.setShipName(fishingInfo.getShipInfo().getName());
-                infoListDto.setTarget(fishingInfo.getInfoTarget());
-                infoListDto.setInfoStartDate(fishingInfo.getInfoStartDate());
-                infoListDto.setInfoStartTime(fishingInfo.getInfoStartTime());
-                infoListDto.setInfoEndTime(fishingInfo.getInfoEndTime());
-                infoListDto.setInfoReservationStatus(fishingInfo.getInfoReservationStatus());
-                infoListDto.setInfoCapacity(fishingInfo.getInfoCapacity());
-                infoListDto.setImage(fishingInfo.getShipInfo().getImage());
-                infoListDto.setInfoMessage(fishingInfo.getInfoMessage());
-                infoListDto.setInfoNotice(fishingInfo.getInfoNotice());
-                infoListDto.setInfoAssemblePoint(fishingInfo.getInfoAssemblePoint());
-                infoListDto.setInfoStartPoint(fishingInfo.getInfoStartPoint());
-                infoListDto.setTotalPage(totalPages);
-                infoListDto.setTotalElement(totalElements);
+
+                ResFishingInfoListDto infoListDto = new ResFishingInfoListDto();
 
                 if (fishingInfo.getInfoStartDate().compareTo(currentDate) >= 0) {
-
-                    ResFishingInfoListDto infoListDto = new ResFishingInfoListDto();
 
                     infoListDto.setFishingInfoId(fishingInfo.getInfoId());
                     infoListDto.setShipInfoId(fishingInfo.getShipInfo().getId());
