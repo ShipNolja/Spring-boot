@@ -19,13 +19,32 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
+
+    /* 후기 작성 */
     @ApiOperation(value = "후기 작성",notes = "예약에 대한 후기를 작성합니다.")
     @PostMapping("")
     public ResResultDto reviewWrite(@LoginUser UserInfo userInfo,
-                                    @ApiParam(value = "예약 아이디", required = true) @RequestParam Long reservationId,
-                                    @ApiParam(value = "출조 정보 아이디", required = true) @RequestParam Long fishingInfoId,
+                                    @ApiParam(value = "예약 아이디", required = true) @RequestParam Long reservation_id,
                                     @ApiParam(value = "후기 정보를 갖는 객체", required = true) @RequestBody ReqReviewDto reqReviewDto) {
 
-        return reviewService.reviewWrite(userInfo, reservationId, fishingInfoId, reqReviewDto);
+        return reviewService.reviewWrite(userInfo, reservation_id, reqReviewDto);
+    }
+
+    /* 후기 수정 */
+    @ApiOperation(value = "후기 수정",notes = "예약에 대한 후기를 수정합니다.")
+    @PutMapping("update")
+    public ResResultDto reviewUpdate(@LoginUser UserInfo userInfo,
+                                     @RequestBody ReqReviewDto reqReviewDto,
+                                     @RequestParam Long reservation_id) {
+
+        return reviewService.reviewUpdate(userInfo, reqReviewDto, reservation_id);
+    }
+
+    @ApiOperation(value = "후기 삭제",notes = "예약에 대한 후기를 삭제합니다.")
+    @DeleteMapping("delete")
+    public ResResultDto reviewDelete(@LoginUser UserInfo userInfo,
+                                     @RequestParam Long reservation_id) {
+
+        return reviewService.reviewDelete(userInfo, reservation_id);
     }
 }

@@ -1,6 +1,7 @@
 package com.shipnolja.reservation.review.model;
 
 import com.shipnolja.reservation.reservation.model.Reservation;
+import com.shipnolja.reservation.ship.model.ShipInfo;
 import com.shipnolja.reservation.user.model.UserInfo;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,13 +44,18 @@ public class Review {
     private Reservation reservation;
 
     @ManyToOne
+    @JoinColumn(name = "shipinfo_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private ShipInfo shipInfo;
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private UserInfo userInfo;
 
     @Builder
     public Review(Long reviewId, String reviewTitle, String reviewContent, LocalDateTime reviewCreate, LocalDateTime reviewUpdate,
-                  Double reviewRating,Reservation reservation, UserInfo userInfo) {
+                  Double reviewRating, Reservation reservation, ShipInfo shipInfo, UserInfo userInfo) {
 
         this.reviewId = reviewId;
         this.reviewTitle = reviewTitle;
@@ -58,6 +64,7 @@ public class Review {
         this.reviewUpdate = reviewUpdate;
         this.reviewRating = reviewRating;
         this.reservation = reservation;
+        this.shipInfo = shipInfo;
         this.userInfo = userInfo;
     }
 }
