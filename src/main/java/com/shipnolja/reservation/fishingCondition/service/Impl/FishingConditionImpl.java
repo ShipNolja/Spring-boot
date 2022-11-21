@@ -114,6 +114,7 @@ public class FishingConditionImpl implements FishingConditionService {
                         listDto.setId(entity.getId());
                         listDto.setDate(entity.getDate());
                         listDto.setTitle(entity.getTitle());
+                        listDto.setContent(entity.getContent());
                         listDto.setFish(entity.getFish());
                         listDto.setFile(null);
                     }else if(fishingConditionFilesRepository.findFirstByFishingCondition(entity).isPresent()){
@@ -121,6 +122,7 @@ public class FishingConditionImpl implements FishingConditionService {
                         listDto.setId(entity.getId());
                         listDto.setDate(entity.getDate());
                         listDto.setTitle(entity.getTitle());
+                        listDto.setContent(entity.getContent());
                         listDto.setFish(entity.getFish());
                         listDto.setFile(fishingConditionFiles.getPath());
                     }

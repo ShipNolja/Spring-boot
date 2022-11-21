@@ -14,6 +14,9 @@ public class ResFishingConditionListDto {
     //제목
     private String title;
 
+    //내용
+    private String content;
+
     //낚시한 날짜(xx일 조황 정보입니다)
     private LocalDate date;
 
