@@ -31,7 +31,6 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final UserRepository userRepository;
     private final ShipRepository shipRepository;
-
     private final FishingInfoRepository fishingInfoRepository;
     private final ReservationRepository reservationRepository;
     private final ReviewRepository reviewRepository;
@@ -48,7 +47,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         List<ResReviewListDto> reviewList = new ArrayList<>();
 
-        reviewPage.forEach(review -> {
+        for(Review review : reviewPage) {
 
             ResReviewListDto resReviewListDto = new ResReviewListDto();
 
@@ -65,9 +64,7 @@ public class ReviewServiceImpl implements ReviewService {
             resReviewListDto.setTotalElement(reviewPage.getTotalElements());
 
             reviewList.add(resReviewListDto);
-
-        });
-
+        }
         return reviewList;
     }
 
