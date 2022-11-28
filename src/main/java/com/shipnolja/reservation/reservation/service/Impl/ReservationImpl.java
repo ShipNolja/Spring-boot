@@ -41,7 +41,7 @@ public class ReservationImpl implements ReservationService {
         ShipInfo checkShipInfo = shipRepository.findById(ship_id)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("선박 정보를 찾을 수 없습니다."));
 
-        FishingInfo checkFishingInfo = fishingInfoRepository.findById(info_id)
+        FishingInfo checkFishingInfo = fishingInfoRepository.findByShipInfoAndInfoId(checkShipInfo, info_id)
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("출조 정보를 찾을 수 없습니다."));
 
         /* 같은 날짜에 중복 예약 못하고, 예약마감 상태인 경우 예약 불가 */

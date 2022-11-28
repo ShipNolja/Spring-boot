@@ -126,48 +126,39 @@ public class FishingInfoImpl implements FishingInfoService {
                 break;
         }
 
-
         List<ResFishingInfoListDto> fishingInfoListDto = new ArrayList<>();
 
-        if (fishingInfoPage != null) {
+        LocalDate currentDate = LocalDate.now();
 
-            int totalPages = fishingInfoPage.getTotalPages();
-            long totalElements = fishingInfoPage.getTotalElements();
+        for (FishingInfo fishingInfo : fishingInfoPage) {
 
-            LocalDate currentDate = LocalDate.now();
+            ResFishingInfoListDto infoListDto = new ResFishingInfoListDto();
 
-            fishingInfoPage.forEach(fishingInfo -> {
+            if (fishingInfo.getInfoStartDate().compareTo(currentDate) >= 0) {
 
-                ResFishingInfoListDto infoListDto = new ResFishingInfoListDto();
+                infoListDto.setFishingInfoId(fishingInfo.getInfoId());
+                infoListDto.setShipInfoId(fishingInfo.getShipInfo().getId());
+                infoListDto.setArea(fishingInfo.getShipInfo().getArea());
+                infoListDto.setDetailArea(fishingInfo.getShipInfo().getDetailArea());
+                infoListDto.setPort(fishingInfo.getShipInfo().getPort());
+                infoListDto.setShipName(fishingInfo.getShipInfo().getName());
+                infoListDto.setTarget(fishingInfo.getInfoTarget());
+                infoListDto.setInfoStartDate(fishingInfo.getInfoStartDate());
+                infoListDto.setInfoStartTime(fishingInfo.getInfoStartTime());
+                infoListDto.setInfoEndTime(fishingInfo.getInfoEndTime());
+                infoListDto.setInfoReservationStatus(fishingInfo.getInfoReservationStatus());
+                infoListDto.setInfoCapacity(fishingInfo.getInfoCapacity());
+                infoListDto.setImage(fishingInfo.getShipInfo().getImage());
+                infoListDto.setInfoMessage(fishingInfo.getInfoMessage());
+                infoListDto.setInfoNotice(fishingInfo.getInfoNotice());
+                infoListDto.setInfoAssemblePoint(fishingInfo.getInfoAssemblePoint());
+                infoListDto.setInfoStartPoint(fishingInfo.getInfoStartPoint());
+                infoListDto.setTotalPage(fishingInfoPage.getTotalPages());
+                infoListDto.setTotalElement(fishingInfoPage.getTotalElements());
 
-                if (fishingInfo.getInfoStartDate().compareTo(currentDate) >= 0) {
-
-                    infoListDto.setFishingInfoId(fishingInfo.getInfoId());
-                    infoListDto.setShipInfoId(fishingInfo.getShipInfo().getId());
-                    infoListDto.setArea(fishingInfo.getShipInfo().getArea());
-                    infoListDto.setDetailArea(fishingInfo.getShipInfo().getDetailArea());
-                    infoListDto.setPort(fishingInfo.getShipInfo().getPort());
-                    infoListDto.setShipName(fishingInfo.getShipInfo().getName());
-                    infoListDto.setTarget(fishingInfo.getInfoTarget());
-                    infoListDto.setInfoStartDate(fishingInfo.getInfoStartDate());
-                    infoListDto.setInfoStartTime(fishingInfo.getInfoStartTime());
-                    infoListDto.setInfoEndTime(fishingInfo.getInfoEndTime());
-                    infoListDto.setInfoReservationStatus(fishingInfo.getInfoReservationStatus());
-                    infoListDto.setInfoCapacity(fishingInfo.getInfoCapacity());
-                    infoListDto.setImage(fishingInfo.getShipInfo().getImage());
-                    infoListDto.setInfoMessage(fishingInfo.getInfoMessage());
-                    infoListDto.setInfoNotice(fishingInfo.getInfoNotice());
-                    infoListDto.setInfoAssemblePoint(fishingInfo.getInfoAssemblePoint());
-                    infoListDto.setInfoStartPoint(fishingInfo.getInfoStartPoint());
-                    infoListDto.setTotalPage(totalPages);
-                    infoListDto.setTotalElement(totalElements);
-
-                    fishingInfoListDto.add(infoListDto);
-                }
-            });
+                fishingInfoListDto.add(infoListDto);
+            }
         }
-
-
         return fishingInfoListDto;
     }
 
@@ -183,11 +174,11 @@ public class FishingInfoImpl implements FishingInfoService {
 
         List<ResFishingInfoListDto> fishingInfoListDto = new ArrayList<>();
 
-        fishingInfoPage.forEach(fishingInfo -> {
+        for (FishingInfo fishingInfo : fishingInfoPage) {
 
             LocalDate currentDate = LocalDate.now();
 
-            /* 현재 날짜 이후 출조 정보만 출력 */
+            /* 오늘 날짜를 포함한 이후 날짜의 데이터만 출력 */
             if (fishingInfo.getInfoStartDate().compareTo(currentDate) >= 0) {
 
                 ResFishingInfoListDto infoListDto = new ResFishingInfoListDto();
@@ -214,9 +205,7 @@ public class FishingInfoImpl implements FishingInfoService {
 
                 fishingInfoListDto.add(infoListDto);
             }
-
-        });
-
+        }
         return fishingInfoListDto;
     }
 
@@ -235,6 +224,9 @@ public class FishingInfoImpl implements FishingInfoService {
 
         List<FishingInfo> fishingInfoList = fishingInfoRepository.findByShipInfo(checkShipInfo);
 
+        /* 리스트에서 수정하려는 객체 제거 => List에 값이 다 담겨 오기 때문에 밑에 -3L에서 걸림 */
+        fishingInfoList.remove(checkFishingInfo);
+
         /* 수정 시 수용 인원 0명인데 예약 가능으로 값이 들어온 경우 -> 반대의 경우 처리 */
         if (reqFishingInfoDto.getInfoCapacity() == 0 && reqFishingInfoDto.getInfoReservationStatus().equals("예약가능")) {
 
@@ -244,9 +236,6 @@ public class FishingInfoImpl implements FishingInfoService {
 
             return new ResResultDto(-2L, "인원이 1명 이상인 경우 예약 가능으로 변경해야 합니다. 다시 시도해 주세요");
         }
-
-        /* 리스트에서 수정하려는 데이터 제거 => List에 값이 다 담겨 오기 때문에 밑에 -3L에서 걸림 */
-        fishingInfoList.remove(checkFishingInfo);
 
         /* 수정 하려는 날짜에 이미 등록된 출조 정보가 있거나 금일 이전의 날짜인 경우 */
         for (FishingInfo fishingInfo : fishingInfoList) {
@@ -284,7 +273,7 @@ public class FishingInfoImpl implements FishingInfoService {
 
         return new ResResultDto(checkFishingInfo.getInfoId(), "출조 정보를 수정 했습니다.");
     }
-    
+
     /* 출조 정보 삭제 */
     @Override
     public ResResultDto fishingInfoDelete(UserInfo userInfo, Long fishingInfo_id) {
@@ -300,7 +289,7 @@ public class FishingInfoImpl implements FishingInfoService {
 
         fishingInfoRepository.deleteById(checkFishingInfo.getInfoId());
 
-        return new ResResultDto(checkFishingInfo.getInfoId(),"출조 정보를 삭제 했습니다.");
+        return new ResResultDto(checkFishingInfo.getInfoId(), "출조 정보를 삭제 했습니다.");
     }
 
     /* 출조 정보 예약 페이지 조회 */

@@ -185,10 +185,7 @@ public class UserServiceImpl implements UserService {
 
         if (reservationPage != null) {
 
-            int totalPages = reservationPage.getTotalPages();
-            long totalElements = reservationPage.getTotalElements();
-
-            reservationPage.forEach(reservation -> {
+            for(Reservation reservation : reservationPage) {
 
                 ResReservationListDto resReservationListDto = new ResReservationListDto();
 
@@ -200,14 +197,12 @@ public class UserServiceImpl implements UserService {
                 resReservationListDto.setUserMessage(reservation.getUserMessage());
                 resReservationListDto.setReservationStatus(reservation.getReservationStatus());
                 resReservationListDto.setReservationPhone(reservation.getReservationPhone());
-                resReservationListDto.setTotalPage(totalPages);
-                resReservationListDto.setTotalElement(totalElements);
+                resReservationListDto.setTotalPage(reservationPage.getTotalPages());
+                resReservationListDto.setTotalElement(reservationPage.getTotalElements());
 
                 reservationList.add(resReservationListDto);
-
-            });
+            }
         }
-
         return reservationList;
     }
 

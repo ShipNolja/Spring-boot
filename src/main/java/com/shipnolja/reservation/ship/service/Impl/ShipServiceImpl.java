@@ -158,16 +158,13 @@ public class ShipServiceImpl implements ShipService {
                 fishingInfoPage = fishingInfoRepository.findByShipInfoAndInfoStartDate(checkShipInfo, fishingInfoDate, pageable);
                 break;
             case "예약상태" :
-                fishingInfoPage = fishingInfoRepository.findByShipInfoAndInfoReservationStatusContaining(checkShipInfo, content, pageable);
+                fishingInfoPage = fishingInfoRepository.findByShipInfoAndInfoReservationStatus(checkShipInfo, content, pageable);
                 break;
         }
 
         if(fishingInfoPage != null) {
 
-            int totalPages = fishingInfoPage.getTotalPages();
-            long totalElements = fishingInfoPage.getTotalElements();
-
-            fishingInfoPage.forEach(fishingInfo -> {
+            for(FishingInfo fishingInfo : fishingInfoPage) {
 
                 ResFishingInfoListDto resFishingInfoListDto = new ResFishingInfoListDto();
 
@@ -188,14 +185,12 @@ public class ShipServiceImpl implements ShipService {
                 resFishingInfoListDto.setInfoNotice(fishingInfo.getInfoNotice());
                 resFishingInfoListDto.setInfoAssemblePoint(fishingInfo.getInfoAssemblePoint());
                 resFishingInfoListDto.setInfoStartPoint(fishingInfo.getInfoStartPoint());
-                resFishingInfoListDto.setTotalPage(totalPages);
-                resFishingInfoListDto.setTotalElement(totalElements);
+                resFishingInfoListDto.setTotalPage(fishingInfoPage.getTotalPages());
+                resFishingInfoListDto.setTotalElement(fishingInfoPage.getTotalElements());
 
                 fishingInfoList.add(resFishingInfoListDto);
-            });
+            }
         }
-
-
         return fishingInfoList;
     }
 
@@ -213,7 +208,7 @@ public class ShipServiceImpl implements ShipService {
 
         List<ResReservationListDto> reservationList = new ArrayList<>();
 
-        checkFishingInfo.forEach(fishingInfo -> {
+        for(FishingInfo fishingInfo : checkFishingInfo) {
 
             Pageable pageable = null;
             Page<Reservation> reservationPage = null;
@@ -243,10 +238,7 @@ public class ShipServiceImpl implements ShipService {
 
             if(reservationPage != null) {
 
-                int totalPages = reservationPage.getTotalPages();
-                long totalElements = reservationPage.getTotalElements();
-
-                reservationPage.forEach(reservation -> {
+                for(Reservation reservation : reservationPage) {
 
                     ResReservationListDto resReservationListDto = new ResReservationListDto();
 
@@ -258,14 +250,13 @@ public class ShipServiceImpl implements ShipService {
                     resReservationListDto.setReservationPhone(reservation.getReservationPhone());
                     resReservationListDto.setUserMessage(reservation.getUserMessage());
                     resReservationListDto.setReservationStatus(reservation.getReservationStatus());
-                    resReservationListDto.setTotalPage(totalPages);
-                    resReservationListDto.setTotalElement(totalElements);
+                    resReservationListDto.setTotalPage(reservationPage.getTotalPages());
+                    resReservationListDto.setTotalElement(reservationPage.getTotalElements());
 
                     reservationList.add(resReservationListDto);
-                });
+                }
             }
-        });
-
+        }
         return reservationList;
     }
 

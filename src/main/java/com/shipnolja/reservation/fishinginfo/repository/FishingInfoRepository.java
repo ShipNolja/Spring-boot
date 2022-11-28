@@ -72,5 +72,5 @@ public interface FishingInfoRepository extends JpaRepository<FishingInfo, Long> 
 
     Optional<FishingInfo> findByShipInfoAndInfoId(ShipInfo shipInfo, Long fishingInfo_id);
     Page<FishingInfo> findByShipInfoAndInfoStartDate(ShipInfo shipInfo, LocalDate startDate, Pageable pageable);
-    Page<FishingInfo> findByShipInfoAndInfoReservationStatusContaining(ShipInfo shipInfo, String content, Pageable pageable);
+    Page<FishingInfo> findByShipInfoAndInfoReservationStatus(ShipInfo shipInfo, String content, Pageable pageable);
 }
