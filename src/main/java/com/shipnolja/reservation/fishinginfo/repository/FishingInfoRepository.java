@@ -44,26 +44,51 @@ public interface FishingInfoRepository extends JpaRepository<FishingInfo, Long> 
     /* 해당 선박의 출조 정보 목록 */
     Page<FishingInfo> findByShipInfo(ShipInfo shipInfo, Pageable pageable);
 
+    @Query(value = "select fi from FishingInfo fi " +
+            "where fi.infoStartDate >= :startDate ")
+    Page<FishingInfo> searchAll(@Param("startDate") LocalDate startDate, Pageable pageable);
+
     /* 지역명 */
-    Page<FishingInfo> findByShipInfo_AreaContaining(String content, Pageable pageable);
+    @Query(value = "select fi from FishingInfo fi join fi.shipInfo si " +
+            "where si.area = :content and fi.infoStartDate >= :startDate ")
+    Page<FishingInfo> searchArea(@Param("content") String content, @Param("startDate") LocalDate startDate,
+                                                    Pageable pageable);
 
     /* 예약 상태 */
-    Page<FishingInfo> findByInfoReservationStatusContaining(String content, Pageable pageable);
+    @Query(value = "select fi from FishingInfo fi " +
+            "where fi.infoReservationStatus = :content and fi.infoStartDate >= :startDate ")
+    Page<FishingInfo> searchReservationStatus(@Param("content") String content, @Param("startDate") LocalDate startDate,
+                                              Pageable pageable);
 
     /* 상세 지역 */
-    Page<FishingInfo> findByShipInfo_DetailAreaContaining(String content, Pageable pageable);
+    @Query(value = "select fi from FishingInfo fi join fi.shipInfo si " +
+            "where si.detailArea = :content and fi.infoStartDate >= :startDate ")
+    Page<FishingInfo> searchDetailArea(@Param("content") String content, @Param("startDate") LocalDate startDate,
+                                                          Pageable pageable);
 
     /* 항구명 */
-    Page<FishingInfo> findByShipInfo_PortContaining(String content, Pageable pageable);
+    @Query(value = "select fi from FishingInfo fi join fi.shipInfo si " +
+            "where si.port = :content and fi.infoStartDate >= :startDate ")
+    Page<FishingInfo> searchPort(@Param("content") String content, @Param("startDate") LocalDate startDate,
+                                 Pageable pageable);
 
     /* 선박명 */
-    Page<FishingInfo> findByShipInfo_NameContaining(String content, Pageable pageable);
+    @Query(value = "select fi from FishingInfo fi join fi.shipInfo si " +
+            "where si.name = :content and fi.infoStartDate >= :startDate ")
+    Page<FishingInfo> searchName(@Param("content") String content, @Param("startDate") LocalDate startDate,
+                                 Pageable pageable);
 
     /* 어종 */
-    Page<FishingInfo> findByInfoTargetContaining(String target, Pageable pageable);
+    @Query(value = "select fi from FishingInfo fi " +
+            "where fi.infoTarget = :target and fi.infoStartDate >= :startDate ")
+    Page<FishingInfo> searchTarget(@Param("target") String target, @Param("startDate") LocalDate startDate,
+                                             Pageable pageable);
     
     /* 출조 날짜 */
-    Page<FishingInfo> findByInfoStartDate(LocalDate startDate, Pageable pageable);
+    @Query(value = "select fi from FishingInfo fi " +
+            "where fi.infoStartDate = :content and fi.infoStartDate >= :startDate ")
+    Page<FishingInfo> searchStartDate(@Param("content") LocalDate content, @Param("startDate") LocalDate startDate,
+                                          Pageable pageable);
 
 
 
