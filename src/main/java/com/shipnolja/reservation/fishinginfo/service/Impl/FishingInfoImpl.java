@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,23 +45,25 @@ public class FishingInfoImpl implements FishingInfoService {
         List<FishingInfo> fishingInfoList = fishingInfoRepository.findByShipInfo(checkShipInfo);
 
         LocalDate currentDate = LocalDate.now();
-        LocalDate startDate = null;
+        LocalTime startTime = null;
+        LocalTime endTime = null;
 
         for (FishingInfo fishingInfo : fishingInfoList) {
 
-            startDate = fishingInfo.getInfoStartDate();
+            startTime = fishingInfo.getInfoStartTime();
+            endTime = fishingInfo.getInfoEndTime();
         }
 
         /* 등록 날짜에 이미 등록된 출조 정보가 있거나 금일 이전의 날짜인 경우 등록 불가 */
-        if (fishingInfoList.isEmpty() && reqFishingInfoDto.getInfoStartDate().isBefore(currentDate)) {
+        if (reqFishingInfoDto.getInfoStartDate().isBefore(currentDate)) {
 
             return new ResResultDto(-1L, "금일을 포함한 이후 날짜로만 등록 가능 합니다.");
 
-        } else if (startDate != null && startDate.compareTo(reqFishingInfoDto.getInfoStartDate()) == 0) {
+        } else if(reqFishingInfoDto.getInfoStartDate().equals(currentDate) &&
+                reqFishingInfoDto.getInfoStartTime().equals(startTime) || reqFishingInfoDto.getInfoEndTime().equals(endTime)) {
 
-            return new ResResultDto(-2L, "해당 날짜에 이미 등록된 출조 정보가 있습니다.");
+            return new ResResultDto(-2L,"금일 이미 등록된 출항 시간 또는 입항 시간이 있습니다. 다른 시간으로 등록해주세요.");
         }
-
 
         FishingInfo fishingInfo = fishingInfoRepository.save(
                 FishingInfo.builder()
