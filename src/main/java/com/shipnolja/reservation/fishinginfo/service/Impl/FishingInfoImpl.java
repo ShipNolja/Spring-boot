@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,23 +45,25 @@ public class FishingInfoImpl implements FishingInfoService {
         List<FishingInfo> fishingInfoList = fishingInfoRepository.findByShipInfo(checkShipInfo);
 
         LocalDate currentDate = LocalDate.now();
-        LocalDate startDate = null;
+        LocalTime startTime = null;
+        LocalTime endTime = null;
 
         for (FishingInfo fishingInfo : fishingInfoList) {
 
-            startDate = fishingInfo.getInfoStartDate();
+            startTime = fishingInfo.getInfoStartTime();
+            endTime = fishingInfo.getInfoEndTime();
         }
 
         /* 등록 날짜에 이미 등록된 출조 정보가 있거나 금일 이전의 날짜인 경우 등록 불가 */
-        if (fishingInfoList.isEmpty() && reqFishingInfoDto.getInfoStartDate().isBefore(currentDate)) {
+        if (reqFishingInfoDto.getInfoStartDate().isBefore(currentDate)) {
 
             return new ResResultDto(-1L, "금일을 포함한 이후 날짜로만 등록 가능 합니다.");
 
-        } else if (startDate != null && startDate.compareTo(reqFishingInfoDto.getInfoStartDate()) == 0) {
+        } else if(reqFishingInfoDto.getInfoStartDate().equals(currentDate) &&
+                reqFishingInfoDto.getInfoStartTime().equals(startTime) || reqFishingInfoDto.getInfoEndTime().equals(endTime)) {
 
-            return new ResResultDto(-2L, "해당 날짜에 이미 등록된 출조 정보가 있습니다.");
+            return new ResResultDto(-2L,"금일 이미 등록된 출항 시간 또는 입항 시간이 있습니다. 다른 시간으로 등록해주세요.");
         }
-
 
         FishingInfo fishingInfo = fishingInfoRepository.save(
                 FishingInfo.builder()
@@ -86,7 +89,9 @@ public class FishingInfoImpl implements FishingInfoService {
     public List<ResFishingInfoListDto> simpleInfoList(int page, String sortMethod, String sortBy, String searchBy,
                                                       String content, String target, LocalDate infoStartDate) {
         Pageable pageable = null;
-        Page<FishingInfo> fishingInfoPage;
+        Page<FishingInfo> fishingInfoPage = null;
+
+        LocalDate startDate = LocalDate.now();
 
         if (sortMethod.equals("asc")) {
             pageable = PageRequest.of(page, 10, Sort.by(sortBy).ascending());
@@ -94,35 +99,33 @@ public class FishingInfoImpl implements FishingInfoService {
             pageable = PageRequest.of(page, 10, Sort.by(sortBy).descending());
         }
 
-        if (target.equals("전체") && pageable != null) {
-            fishingInfoPage = fishingInfoRepository.findAll(pageable);
-        } else {
-            fishingInfoPage = fishingInfoRepository.findByInfoTargetContaining(target, pageable);
+        if (target.equals("전체")) {
+            fishingInfoPage = fishingInfoRepository.searchAll(startDate, pageable);
+        } else if(target.equals("어종")){
+            fishingInfoPage = fishingInfoRepository.searchTarget(target, startDate, pageable);
         }
 
         switch (searchBy) {
             case "지역":
-                fishingInfoPage = fishingInfoRepository.findByShipInfo_AreaContaining(content, pageable);
+                fishingInfoPage = fishingInfoRepository.searchArea(content, startDate, pageable);
                 break;
             case "상세지역":
-                fishingInfoPage = fishingInfoRepository.findByShipInfo_DetailAreaContaining(content, pageable);
+                fishingInfoPage = fishingInfoRepository.searchDetailArea(content, startDate, pageable);
                 break;
             case "항구":
-                fishingInfoPage = fishingInfoRepository.findByShipInfo_PortContaining(content, pageable);
+                fishingInfoPage = fishingInfoRepository.searchPort(content, startDate, pageable);
                 break;
             case "선박명":
-                fishingInfoPage = fishingInfoRepository.findByShipInfo_NameContaining(content, pageable);
+                fishingInfoPage = fishingInfoRepository.searchName(content, startDate, pageable);
                 break;
             case "예약상태":
-                fishingInfoPage = fishingInfoRepository.findByInfoReservationStatusContaining(content, pageable);
+                fishingInfoPage = fishingInfoRepository.searchReservationStatus(content, startDate, pageable);
                 break;
             case "출항날짜":
-                fishingInfoPage = fishingInfoRepository.findByInfoStartDate(infoStartDate, pageable);
+                fishingInfoPage = fishingInfoRepository.searchStartDate(infoStartDate, startDate,pageable);
                 break;
             case "전체":
-                if (pageable != null) {
-                    fishingInfoPage = fishingInfoRepository.findAll(pageable);
-                }
+                fishingInfoPage = fishingInfoRepository.searchAll(startDate, pageable);
                 break;
         }
 
@@ -130,33 +133,35 @@ public class FishingInfoImpl implements FishingInfoService {
 
         LocalDate currentDate = LocalDate.now();
 
-        for (FishingInfo fishingInfo : fishingInfoPage) {
+        if (fishingInfoPage != null) {
+            for (FishingInfo fishingInfo : fishingInfoPage) {
 
-            ResFishingInfoListDto infoListDto = new ResFishingInfoListDto();
+                ResFishingInfoListDto infoListDto = new ResFishingInfoListDto();
 
-            if (fishingInfo.getInfoStartDate().compareTo(currentDate) >= 0) {
+                if (fishingInfo.getInfoStartDate().compareTo(currentDate) >= 0) {
 
-                infoListDto.setFishingInfoId(fishingInfo.getInfoId());
-                infoListDto.setShipInfoId(fishingInfo.getShipInfo().getId());
-                infoListDto.setArea(fishingInfo.getShipInfo().getArea());
-                infoListDto.setDetailArea(fishingInfo.getShipInfo().getDetailArea());
-                infoListDto.setPort(fishingInfo.getShipInfo().getPort());
-                infoListDto.setShipName(fishingInfo.getShipInfo().getName());
-                infoListDto.setTarget(fishingInfo.getInfoTarget());
-                infoListDto.setInfoStartDate(fishingInfo.getInfoStartDate());
-                infoListDto.setInfoStartTime(fishingInfo.getInfoStartTime());
-                infoListDto.setInfoEndTime(fishingInfo.getInfoEndTime());
-                infoListDto.setInfoReservationStatus(fishingInfo.getInfoReservationStatus());
-                infoListDto.setInfoCapacity(fishingInfo.getInfoCapacity());
-                infoListDto.setImage(fishingInfo.getShipInfo().getImage());
-                infoListDto.setInfoMessage(fishingInfo.getInfoMessage());
-                infoListDto.setInfoNotice(fishingInfo.getInfoNotice());
-                infoListDto.setInfoAssemblePoint(fishingInfo.getInfoAssemblePoint());
-                infoListDto.setInfoStartPoint(fishingInfo.getInfoStartPoint());
-                infoListDto.setTotalPage(fishingInfoPage.getTotalPages());
-                infoListDto.setTotalElement(fishingInfoPage.getTotalElements());
+                    infoListDto.setFishingInfoId(fishingInfo.getInfoId());
+                    infoListDto.setShipInfoId(fishingInfo.getShipInfo().getId());
+                    infoListDto.setArea(fishingInfo.getShipInfo().getArea());
+                    infoListDto.setDetailArea(fishingInfo.getShipInfo().getDetailArea());
+                    infoListDto.setPort(fishingInfo.getShipInfo().getPort());
+                    infoListDto.setShipName(fishingInfo.getShipInfo().getName());
+                    infoListDto.setTarget(fishingInfo.getInfoTarget());
+                    infoListDto.setInfoStartDate(fishingInfo.getInfoStartDate());
+                    infoListDto.setInfoStartTime(fishingInfo.getInfoStartTime());
+                    infoListDto.setInfoEndTime(fishingInfo.getInfoEndTime());
+                    infoListDto.setInfoReservationStatus(fishingInfo.getInfoReservationStatus());
+                    infoListDto.setInfoCapacity(fishingInfo.getInfoCapacity());
+                    infoListDto.setImage(fishingInfo.getShipInfo().getImage());
+                    infoListDto.setInfoMessage(fishingInfo.getInfoMessage());
+                    infoListDto.setInfoNotice(fishingInfo.getInfoNotice());
+                    infoListDto.setInfoAssemblePoint(fishingInfo.getInfoAssemblePoint());
+                    infoListDto.setInfoStartPoint(fishingInfo.getInfoStartPoint());
+                    infoListDto.setTotalPage(fishingInfoPage.getTotalPages());
+                    infoListDto.setTotalElement(fishingInfoPage.getTotalElements());
 
-                fishingInfoListDto.add(infoListDto);
+                    fishingInfoListDto.add(infoListDto);
+                }
             }
         }
         return fishingInfoListDto;

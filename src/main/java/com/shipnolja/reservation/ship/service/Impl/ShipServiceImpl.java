@@ -123,7 +123,11 @@ public class ShipServiceImpl implements ShipService {
 
     @Override
     public ResManagerShipInfo shipMangerInfo(Long id) {
-        ShipInfo shipManagerInfo = shipRepository.findById(id).orElseThrow(
+
+        UserInfo userInfo = userRepository.findById(id).
+                orElseThrow(() -> new CustomException.ResourceNotFoundException("회원 정보를 찾을 수 없습니다."));
+
+        ShipInfo shipManagerInfo = shipRepository.findByUserInfo(userInfo).orElseThrow(
                 () -> new CustomException.ResourceNotFoundException("선상 정보를 찾을 수 없습니다")
         );
 
