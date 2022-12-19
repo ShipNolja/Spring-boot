@@ -45,11 +45,7 @@ public class ReservationImpl implements ReservationService {
                 .orElseThrow(() -> new CustomException.ResourceNotFoundException("출조 정보를 찾을 수 없습니다."));
 
         /* 같은 날짜에 중복 예약 못하고, 예약마감 상태인 경우 예약 불가 */
-        if(checkUserInfo.getId().equals(userInfo.getId()) && reservationRepository.findByReservationDate(checkFishingInfo.getInfoStartDate()).isPresent()) {
-
-            return new ResResultDto(-1L,"해당 날짜에 이미 예약이 있습니다 취소 후 예약 해주세요");
-
-        } else if(checkFishingInfo.getInfoReservationStatus().equals("예약마감")) {
+        if(checkFishingInfo.getInfoReservationStatus().equals("예약마감")) {
 
             return new ResResultDto(-2L,"예약이 마감 되었습니다 다른 날짜에 이용해주세요");
 
