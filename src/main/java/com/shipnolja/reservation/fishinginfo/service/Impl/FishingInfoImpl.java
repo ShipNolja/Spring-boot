@@ -101,7 +101,7 @@ public class FishingInfoImpl implements FishingInfoService {
 
         if (target.equals("전체")) {
             fishingInfoPage = fishingInfoRepository.searchAll(startDate, pageable);
-        } else if(target.equals("어종")){
+        } else {
             fishingInfoPage = fishingInfoRepository.searchTarget(target, startDate, pageable);
         }
 
